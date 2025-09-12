@@ -689,12 +689,12 @@ export const InvoiceCard = ({ className }: { className?: string }) => {
                                             onChange={(e) => {
                                                 const value = e.target.value
                                                 // Only allow numbers and one decimal point
-                                                if (/^\d*\.?\d*$/.test(value) && value.length <= 5) {
+                                                if (/^\d*\.?\d*$/.test(value) && value.length <= 7) {
                                                     setEditingPrice(value)
                                                 }
                                             }}
                                             className="w-16 h-6 text-xs px-1"
-                                            maxLength={5}
+                                            maxLength={7}
                                             autoFocus
                                             onKeyDown={(e) => {
                                                 if (e.key === 'Enter') handleSavePrice(model.id)
