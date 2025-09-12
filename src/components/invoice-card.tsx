@@ -692,7 +692,7 @@ export const InvoiceCard = ({ className }: { className?: string }) => {
                                                 const value = e.target.value
                                                 // Only allow numbers and one decimal point
                                                 if (/^\d*\.?\d*$/.test(value)) {
-                                                    if (value.length <= 7) {
+                                                    if (value.length <= 6) {
                                                         setEditingPrice(value)
                                                     } else {
                                                         // Trigger shake animation
@@ -705,7 +705,7 @@ export const InvoiceCard = ({ className }: { className?: string }) => {
                                                 "w-16 h-6 text-xs px-1",
                                                 shakeInput === model.id && "animate-shake"
                                             )}
-                                            maxLength={7}
+                                            maxLength={6}
                                             autoFocus
                                             onKeyDown={(e) => {
                                                 if (e.key === 'Enter') {
@@ -713,7 +713,7 @@ export const InvoiceCard = ({ className }: { className?: string }) => {
                                                 } else if (e.key === 'Escape') {
                                                     handleCancelEdit()
                                                 } else if (
-                                                    editingPrice.length >= 7 && 
+                                                    editingPrice.length >= 6 && 
                                                     !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key) &&
                                                     !e.ctrlKey && !e.metaKey
                                                 ) {
