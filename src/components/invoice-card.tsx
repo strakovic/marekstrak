@@ -7,9 +7,9 @@ import ElegantNumberCounter from '@/components/ui/elegant-number-counter'
 import { AnimatedGradientText } from '@/components/magicui/animated-gradient-text'
 import { Button as HeroUIButton } from '@heroui/button'
 import { Button } from '@/components/ui/button'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
-import { Pencil, Check, X } from 'lucide-react'
+import { Pencil, Check, X, Bell, Send, Download, Share2, FileText } from 'lucide-react'
 
 interface InvoiceData {
     id: string
@@ -572,14 +572,39 @@ export const InvoiceCard = ({ className }: { className?: string }) => {
                             </HeroUIButton>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="min-w-[12rem]">
-                            <DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() => {
+                                    // Find and click the first price edit button
+                                    const firstModel = models[0]
+                                    if (firstModel) {
+                                        handleEditPrice(firstModel.id, firstModel.pricePerToken)
+                                    }
+                                }}
+                            >
+                                <Pencil className="mr-2 h-3.5 w-3.5" />
+                                Edit Prices
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem disabled>
+                                <Bell className="mr-2 h-3.5 w-3.5" />
+                                Set Notification
+                            </DropdownMenuItem>
+                            <DropdownMenuItem disabled>
+                                <Send className="mr-2 h-3.5 w-3.5" />
+                                Send
+                            </DropdownMenuItem>
+                            <DropdownMenuItem disabled>
+                                <FileText className="mr-2 h-3.5 w-3.5" />
                                 Edit
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                Details
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem disabled>
+                                <Download className="mr-2 h-3.5 w-3.5" />
+                                Download
                             </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                Export
+                            <DropdownMenuItem disabled>
+                                <Share2 className="mr-2 h-3.5 w-3.5" />
+                                Share
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
