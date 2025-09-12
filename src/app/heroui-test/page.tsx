@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
 import { Card, CardBody, CardHeader } from "@heroui/card";
@@ -228,7 +230,7 @@ export default function HeroUITestPage() {
             🎉 HeroUI is now successfully integrated with your billr project!
           </p>
           <p className="text-sm text-muted-foreground mt-2">
-            Visit <a href="http://localhost:3001/heroui-test" className="text-brand hover:underline">localhost:3001/heroui-test</a> to see this page
+            Visit <a href="/heroui-test" className="text-brand hover:underline">/heroui-test</a> to see this page
           </p>
         </div>
       </div>

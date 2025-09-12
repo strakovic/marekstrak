@@ -1,4 +1,4 @@
-import { InvoiceIllustration } from "@/components/invoice-illustration"
+import { InvoiceCard } from "@/components/invoice-card"
 import { cn } from '@/lib/utils'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { VisualizationIllustration } from "@/components/visualization-illustration"
@@ -18,14 +18,20 @@ export default function FeaturesSection() {
                         <PlusDecorator className="bottom-0 -translate-x-[calc(50%-0.5px)] translate-y-[calc(50%-0.5px)]" />
 
                         <div className="*:nth-3:border-r @max-3xl:*:nth-[1n+1]:nth-[-n+6]:border-b @3xl:*:nth-6:border-r @3xl:*:nth-[1n+3]:nth-[-n+4]:border-r @3xl:*:nth-[1n+1]:nth-[-n+5]:border-b border-foreground/10 divide-foreground/10 @3xl:grid-cols-4 @3xl:*:first:border-r relative grid grid-cols-2 overflow-hidden border *:p-8">
-                            <div className="col-span-2 row-span-2 grid grid-rows-subgrid gap-8 p-8">
-                                <div className="max-w-84 mx-auto w-full self-center">
-                                    <InvoiceIllustration />
+                            <div className="col-span-2 row-span-2 p-8 relative">
+                                <div className="flex flex-col gap-4">
+                                    <div className="mx-auto w-full relative z-10" style={{ maxWidth: '22rem' }}>
+                                        <InvoiceCard />
+                                    </div>
+                                    <div className="mx-auto max-w-sm text-center relative z-30 -mt-7">
+                                        <h3 className="text-balance font-neue-montreal-medium font-semibold">Intuitive Dashboard Experience</h3>
+                                        <p className="text-muted-foreground mt-3 font-neue-montreal-book">Simplify complex data with our user-friendly interface designed for quick insights.</p>
+                                    </div>
                                 </div>
-                                <div className="mx-auto max-w-sm text-center">
-                                    <h3 className="text-balance font-neue-montreal-medium font-semibold">Intuitive Dashboard Experience</h3>
-                                    <p className="text-muted-foreground mt-3 font-neue-montreal-book">Simplify complex data with our user-friendly interface designed for quick insights.</p>
-                                </div>
+                                {/* Background overlay to cover invoice card bottom and shadow */}
+                                <div className="absolute bottom-0 left-0 right-0 h-64 pointer-events-none z-20" style={{
+                                    background: 'linear-gradient(to top, #FAFAFA 0%, #FAFAFA 55%, transparent 85%)'
+                                }} />
                             </div>
 
                             <div className="relative col-span-2 row-span-2 grid grid-rows-subgrid gap-8 p-8">

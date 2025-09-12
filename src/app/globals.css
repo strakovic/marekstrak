@@ -73,7 +73,7 @@
       background-position: 0% 0%;}
     100% {
       background-position: 200% 200%;}}
-      
+
   @keyframes shadowGlow {
     0%, 100% {
       box-shadow: 0 0 2px 0 rgba(249, 98, 12, 0.3);
@@ -84,7 +84,7 @@
                   0 0 5px 2px rgba(249, 98, 12, 1);
     }
   }
-  
+
   @keyframes popIn {
     0% {
       transform: translateY(-10px) scale(0.85);
@@ -99,7 +99,7 @@
       opacity: 1;
     }
   }
-  
+
   @keyframes marquee {
     from {
       transform: translateX(0);
@@ -108,7 +108,7 @@
       transform: translateX(calc(-100% - var(--gap)));
     }
   }
-  
+
   @keyframes marquee-vertical {
     from {
       transform: translateY(0);
@@ -117,7 +117,7 @@
       transform: translateY(calc(-100% - var(--gap)));
     }
   }
-  
+
   @keyframes pulseShadow {
     0%, 100% {
       box-shadow: rgba(34, 197, 94, 0.6) 0px 0px 12px 2px;
@@ -126,7 +126,7 @@
       box-shadow: rgba(34, 197, 94, 0.2) 0px 0px 4px 1px;
     }
   }
-  
+
   @keyframes pulseShadowGreen {
     0%, 100% {
       transform: scale(1);
@@ -137,9 +137,15 @@
       box-shadow: 0 0 2px 1px rgba(34, 197, 94, 0.4);
     }
   }
-  
+
   --animate-marquee: marquee var(--duration) linear infinite;
   --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  --animate-gradient: gradient 8s linear infinite;
+  @keyframes gradient {
+  to {
+    background-position: var(--bg-size, 300%) 0;
+    }
+  }
 }
 
 /* Force cursor to remain as default/arrow for proximity text */
@@ -227,15 +233,14 @@
   body {
     @apply bg-background text-foreground font-sans;
   }
-  
+
   /* Performance optimizations for smooth animations */
   .smooth-scroll {
     transform: translateZ(0);
     backface-visibility: hidden;
     perspective: 1000px;
   }
-  
-  
+
 }
 
 @layer utilities {
@@ -247,7 +252,7 @@
     --tw-ring-shadow: none !important;
     --tw-ring-offset-shadow: none !important;
   }
-  
+
   /* Reduce motion for users who prefer it */
   @media (prefers-reduced-motion: reduce) {
     *,
@@ -259,12 +264,12 @@
       scroll-behavior: auto !important;
     }
   }
-  
+
   /* Pause animations when not visible */
   [data-paused="true"] * {
     animation-play-state: paused !important;
   }
-  
+
   /* Neue Montreal font utilities */
   .font-neue-montreal {
     font-family: var(--font-neue-montreal), ui-sans-serif, system-ui, sans-serif;
@@ -287,12 +292,12 @@
     font-family: var(--font-neue-montreal), ui-sans-serif, system-ui, sans-serif;
     font-weight: 500;
   }
-  
+
   /* Green pulse animation for live indicator */
   .animate-pulse-green {
     animation: pulseShadowGreen 2s ease-in-out infinite;
   }
-  
+
   /* Shiny text animation keyframes */
   @keyframes shiny-text {
     0% {
@@ -302,7 +307,7 @@
       background-position: -100% center;
     }
   }
-  
+
   @keyframes shiny-sweep {
     0% {
       background-position: -100% center;
@@ -317,7 +322,7 @@
       opacity: 0;
     }
   }
-  
+
   @keyframes shimmer {
     0% {
       background-position: -50% 0;
@@ -325,5 +330,14 @@
     100% {
       background-position: 150% 0;
     }
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }
