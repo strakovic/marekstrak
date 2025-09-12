@@ -129,15 +129,23 @@
   
   @keyframes pulseShadowGreen {
     0%, 100% {
-      box-shadow: 0 0 6px 3px rgba(34, 197, 94, 0.7);
+      transform: scale(1);
+      box-shadow: 0 0 8px 4px rgba(34, 197, 94, 0.8);
     }
     50% {
-      box-shadow: 0 0 2px 2px rgba(34, 197, 94, 0.3);
+      transform: scale(0.7);
+      box-shadow: 0 0 2px 1px rgba(34, 197, 94, 0.4);
     }
   }
   
   --animate-marquee: marquee var(--duration) linear infinite;
   --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+}
+
+/* Force cursor to remain as default/arrow for proximity text */
+.cursor-default,
+.cursor-default * {
+  cursor: default !important;
 }
 
 :root {

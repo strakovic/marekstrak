@@ -9,6 +9,16 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@heroui/avatar": "^2.2.21",
+    "@heroui/badge": "^2.2.16",
+    "@heroui/button": "^2.2.26",
+    "@heroui/card": "^2.2.24",
+    "@heroui/dropdown": "^2.3.26",
+    "@heroui/input": "^2.4.27",
+    "@heroui/modal": "^2.2.23",
+    "@heroui/navbar": "^2.2.24",
+    "@heroui/system": "^2.4.22",
+    "@heroui/theme": "^2.4.22",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-navigation-menu": "^1.2.14",

@@ -166,9 +166,9 @@ export default function HeroSection() {
               <div className="relative z-10">
                 <ProximityText 
                   text="The first and the last usage-based billing platform you'll ever need."
-                  className="text-foreground text-balance text-4xl font-neue-montreal-bold sm:text-5xl lg:text-6xl"
-                  radius={150}
-                  maxScale={1.15}
+                  className="text-foreground text-balance text-4xl font-neue-montreal-bold sm:text-5xl lg:text-6xl cursor-default"
+                  radius={70}
+                  maxScale={1.04}
                   falloff="gaussian"
                 />
                 <p className="mx-auto mb-12 mt-12 max-w-xl text-balance text-lg font-neue-montreal-book" style={{ color: '#0A0A0A' }}>
@@ -178,10 +178,10 @@ export default function HeroSection() {
               {/* Simple orange button matching header style with magnet hover effect */}
               <div className="relative z-10 flex items-center justify-center">
                 <Magnet
-                  padding={60}
-                  magnetStrength={6}
-                  activeTransition="transform 0.15s ease-out"
-                  inactiveTransition="transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)"
+                  padding={15}
+                  magnetStrength={0.8}
+                  activeTransition="transform 0.6s ease-out"
+                  inactiveTransition="transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94)"
                 >
                   <Button asChild size="lg">
                     <Link href="#">
