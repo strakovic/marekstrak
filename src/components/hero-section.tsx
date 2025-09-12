@@ -10,6 +10,7 @@ import { DotPattern } from "@/components/magicui/dot-pattern";
 import { cn } from "@/lib/utils";
 import FeaturesSection from "@/components/features-13";
 import ShinyText from "@/components/ui/shiny-text";
+import ProximityText from "@/components/ui/proximity-text";
 
 // Simple button styles matching the header button
 
@@ -163,9 +164,13 @@ export default function HeroSection() {
               {/* Soft radial gradient background for better text readability */}
               <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_1000px_800px_at_center,rgba(250,250,250,0.9),transparent_70%)] dark:bg-[radial-gradient(ellipse_1000px_800px_at_center,rgba(255,255,255,0.15),transparent_70%)]" />
               <div className="relative z-10">
-                <h1 className="text-foreground text-balance text-4xl font-neue-montreal-bold sm:text-5xl lg:text-6xl">
-                  The first and the last usage-based billing platform you'll ever need.
-                </h1>
+                <ProximityText 
+                  text="The first and the last usage-based billing platform you'll ever need."
+                  className="text-foreground text-balance text-4xl font-neue-montreal-bold sm:text-5xl lg:text-6xl"
+                  radius={150}
+                  maxScale={1.15}
+                  falloff="gaussian"
+                />
                 <p className="mx-auto mb-12 mt-12 max-w-xl text-balance text-lg font-neue-montreal-book" style={{ color: '#0A0A0A' }}>
                   Billr gives you the power to experiment, scale, and evolve with a system <strong>flexible</strong> enough to support billing for <strong>pricing strategies</strong> you <strong>haven't even imagined</strong> <span className="font-neue-montreal-book">yet</span>.
                 </p>

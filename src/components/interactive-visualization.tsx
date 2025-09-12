@@ -2,110 +2,195 @@
 
 import { cn } from '@/lib/utils'
 import { Marquee } from '@/components/magicui/marquee'
+import { useMemo, useState } from 'react'
 
-// Sample data for the scrolling cards - split into three rows
+// Mixed data cards with randomized distribution and diverse time periods
 const firstRow = [
   {
     id: 1,
-    label: "Total Revenue",
-    value: "45.2K",
-    change: "+12.5%",
+    label: "Revenue",
+    value: "87.3K",
+    change: "+12.4%",
+    period: "vs last month",
     trend: "up" as const,
-    chartData: [30, 28, 35, 42, 38, 44, 45]
+    chartData: [77.7, 76.2, 75.2, 76.8, 78.1, 79.1, 77.9, 76.4, 73.6, 75.1, 77.2, 79.8, 81.4, 83.1, 82.3, 84.7, 85.9, 86.2, 87.1, 86.8, 87.3]
   },
   {
     id: 2,
-    label: "Active Users",
-    value: "2,345",
-    change: "+0.3%",
-    trend: "neutral" as const,
-    chartData: [22, 23, 22, 24, 23, 24, 23]
+    label: "Churn",
+    value: "5.6%",
+    change: "+1.4%",
+    period: "vs yesterday",
+    trend: "down" as const,
+    chartData: [5.52, 5.48, 5.38, 5.44, 5.51, 5.61, 5.58, 5.42, 5.29, 5.35, 5.48, 5.62, 5.74, 5.69, 5.53, 5.47, 5.51, 5.58, 5.62, 5.59, 5.6]
   },
   {
     id: 3,
-    label: "Conversion Rate",
-    value: "23.4%",
-    change: "+5.2%",
-    trend: "up" as const,
-    chartData: [18, 15, 22, 19, 25, 23, 28]
+    label: "Rules",
+    value: "176",
+    change: "+2.4%",
+    period: "vs last quarter",
+    trend: "neutral" as const,
+    chartData: [172, 171, 169, 170, 172, 174, 173, 172, 171, 170, 172, 174, 173, 175, 174, 175, 176, 175, 174, 175, 176]
   },
   {
     id: 4,
-    label: "Avg Order Value",
-    value: "$128",
-    change: "-2.1%",
+    label: "Collected",
+    value: "78.5K",
+    change: "+10.1%",
+    period: "vs last year",
+    trend: "up" as const,
+    chartData: [71.3, 70.8, 69.8, 70.5, 71.2, 72.4, 71.9, 70.8, 70.1, 71.4, 73.2, 74.8, 76.2, 75.9, 75.1, 75.8, 76.9, 77.8, 78.1, 78.0, 78.5]
+  },
+  {
+    id: 5,
+    label: "Failures",
+    value: "1,123",
+    change: "+7.2%",
+    period: "vs last week",
     trend: "down" as const,
-    chartData: [35, 38, 32, 30, 28, 25, 24]
+    chartData: [1047, 1058, 1089, 1072, 1045, 1024, 1038, 1067, 1134, 1125, 1098, 1076, 1089, 1102, 1098, 1115, 1108, 1123, 1119, 1121, 1123]
+  },
+  {
+    id: 6,
+    label: "Customs",
+    value: "41",
+    change: "−1.2%",
+    period: "vs last month",
+    trend: "neutral" as const,
+    chartData: [41.5, 41.8, 42, 41.7, 41.2, 40.8, 41.1, 41.4, 41.9, 41.6, 41.0, 40.6, 40.9, 41.2, 41.4, 41.1, 40.8, 41.0, 41.2, 41.1, 41]
   }
 ]
 
 const secondRow = [
   {
-    id: 5,
-    label: "Page Views",
-    value: "89.3K",
-    change: "+15.7%",
-    trend: "up" as const,
-    chartData: [60, 58, 72, 68, 85, 82, 89]
-  },
-  {
-    id: 6,
-    label: "Engagement",
-    value: "67%",
-    change: "+1.1%",
-    trend: "neutral" as const,
-    chartData: [65, 66, 65, 67, 66, 67, 67]
-  },
-  {
     id: 7,
-    label: "Total Orders",
-    value: "342",
-    change: "+21.3%",
+    label: "Activations",
+    value: "1,247",
+    change: "+8.6%",
+    period: "vs last week",
     trend: "up" as const,
-    chartData: [25, 22, 30, 35, 32, 40, 42]
+    chartData: [1148, 1152, 1134, 1145, 1167, 1189, 1178, 1165, 1162, 1174, 1188, 1195, 1203, 1209, 1198, 1218, 1232, 1238, 1245, 1241, 1247]
   },
   {
     id: 8,
-    label: "Bounce Rate",
-    value: "32.1%",
-    change: "-4.2%",
+    label: "Retries",
+    value: "812",
+    change: "+3.5%",
+    period: "vs last month",
     trend: "down" as const,
-    chartData: [45, 48, 42, 38, 36, 34, 32]
+    chartData: [784, 789, 798, 791, 785, 771, 778, 791, 819, 815, 808, 795, 799, 803, 806, 809, 805, 812, 808, 810, 812]
+  },
+  {
+    id: 9,
+    label: "Contracts",
+    value: "24",
+    change: "+1",
+    period: "vs yesterday",
+    trend: "neutral" as const,
+    chartData: [23, 22.8, 22, 22.4, 23.1, 23.5, 23.2, 22.9, 22.8, 23.2, 23.8, 24.1, 24.2, 24.0, 23.8, 23.7, 23.9, 24.1, 24.0, 23.8, 24]
+  },
+  {
+    id: 10,
+    label: "Recovered",
+    value: "6.9K",
+    change: "+14.2%",
+    period: "vs last quarter",
+    trend: "up" as const,
+    chartData: [6.04, 6.08, 5.82, 5.95, 6.12, 6.31, 6.25, 6.08, 5.97, 6.15, 6.32, 6.38, 6.45, 6.52, 6.48, 6.72, 6.79, 6.84, 6.88, 6.87, 6.9]
+  },
+  {
+    id: 11,
+    label: "Disputes",
+    value: "62",
+    change: "+4.8%",
+    period: "vs last week",
+    trend: "down" as const,
+    chartData: [59.2, 59.8, 61.1, 60.5, 59.1, 58.4, 58.9, 59.6, 60.7, 60.2, 59.5, 59.8, 60.4, 60.9, 61.3, 61.7, 61.2, 61.8, 62.1, 61.9, 62]
+  },
+  {
+    id: 12,
+    label: "Invoice",
+    value: "$438",
+    change: "+0.6%",
+    period: "vs last month",
+    trend: "neutral" as const,
+    chartData: [435.4, 436.2, 437.1, 436.8, 435.9, 434.8, 435.5, 436.2, 436.9, 436.4, 435.8, 435.2, 435.9, 436.8, 437.3, 437.6, 437.2, 437.8, 438.1, 437.9, 438]
+  },
+  {
+    id: 13,
+    label: "Events",
+    value: "92.1K",
+    change: "+16.3%",
+    period: "vs last year",
+    trend: "up" as const,
+    chartData: [79.2, 78.5, 76.8, 78.9, 81.2, 83.1, 82.4, 79.8, 78.4, 80.7, 83.9, 85.8, 86.7, 87.9, 88.6, 89.3, 90.1, 90.8, 91.5, 91.8, 92.1]
   }
 ]
 
 const thirdRow = [
   {
-    id: 9,
-    label: "Net Profit",
-    value: "$18.5K",
-    change: "+9.8%",
+    id: 14,
+    label: "Charges",
+    value: "23.4K",
+    change: "+5.1%",
+    period: "vs last quarter",
     trend: "up" as const,
-    chartData: [12, 10, 15, 14, 18, 16, 19]
+    chartData: [22.26, 22.18, 21.89, 22.05, 22.34, 22.67, 22.58, 22.31, 21.95, 22.12, 22.45, 22.78, 23.12, 23.05, 22.91, 22.84, 23.08, 23.21, 23.35, 23.28, 23.4]
   },
   {
-    id: 10,
-    label: "Cart Abandonment",
-    value: "28.3%",
-    change: "-0.5%",
+    id: 15,
+    label: "Discounts",
+    value: "79",
+    change: "+3.2%",
+    period: "vs last month",
     trend: "neutral" as const,
-    chartData: [29, 28, 29, 28, 28, 29, 28]
+    chartData: [76.5, 76.1, 75.2, 75.8, 76.7, 77.8, 77.5, 76.8, 76.1, 76.4, 77.1, 77.6, 78.4, 78.1, 77.8, 77.9, 78.3, 78.6, 78.9, 78.7, 79]
   },
   {
-    id: 11,
-    label: "Customer LTV",
-    value: "$486",
-    change: "+11.2%",
-    trend: "up" as const,
-    chartData: [40, 38, 44, 42, 48, 45, 49]
-  },
-  {
-    id: 12,
-    label: "Churn Rate",
-    value: "5.8%",
-    change: "-1.3%",
+    id: 16,
+    label: "Unpriced",
+    value: "4,218",
+    change: "+6.9%",
+    period: "vs yesterday",
     trend: "down" as const,
-    chartData: [8, 9, 7.5, 7, 6.5, 6.8, 5.8]
+    chartData: [3946, 3978, 4089, 4052, 3958, 3821, 3887, 3965, 4156, 4121, 4087, 4023, 4058, 4091, 4134, 4167, 4189, 4203, 4218, 4201, 4218]
+  },
+  {
+    id: 17,
+    label: "Quotes",
+    value: "398",
+    change: "+6.8%",
+    period: "vs last month",
+    trend: "up" as const,
+    chartData: [373, 371, 368, 372, 377, 381, 379, 376, 375, 378, 383, 386, 389, 391, 393, 394, 396, 397, 398, 397, 398]
+  },
+  {
+    id: 18,
+    label: "Adjustments",
+    value: "36",
+    change: "−2.1%",
+    period: "vs last year",
+    trend: "neutral" as const,
+    chartData: [36.8, 37.1, 37.4, 37.2, 36.9, 36.2, 36.5, 36.8, 37.1, 36.7, 36.4, 35.9, 36.2, 36.4, 36.5, 36.3, 36.1, 36.2, 36.0, 35.9, 36]
+  },
+  {
+    id: 19,
+    label: "Leakage",
+    value: "3.5K",
+    change: "+9.1%",
+    period: "vs last week",
+    trend: "down" as const,
+    chartData: [3.21, 3.28, 3.34, 3.31, 3.19, 3.08, 3.15, 3.24, 3.42, 3.38, 3.32, 3.26, 3.29, 3.34, 3.38, 3.42, 3.45, 3.47, 3.5, 3.48, 3.5]
+  },
+  {
+    id: 20,
+    label: "Delays",
+    value: "118",
+    change: "+2.7%",
+    period: "vs last quarter",
+    trend: "down" as const,
+    chartData: [115, 114, 112, 113, 115, 117, 116, 114, 109, 111, 114, 118, 121, 119, 117, 116, 117, 118, 119, 118, 118]
   }
 ]
 
@@ -113,16 +198,48 @@ interface DataCardProps {
   label: string
   value: string
   change: string
+  period: string
   trend: 'up' | 'down' | 'neutral'
   chartData: number[]
 }
 
-const DataCard = ({ label, value, change, trend, chartData }: DataCardProps) => {
+const DataCard = ({ label, value, change, period, trend, chartData }: DataCardProps) => {
+  // State for hover functionality
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+  
+  // Format tooltip values to match the main display format
+  const formatTooltipValue = (rawValue: number): string => {
+    // Determine the format based on the main value
+    if (value.includes('K')) {
+      // For K values, determine if raw data is already in K format or needs conversion
+      if (rawValue < 100) {
+        // Raw data is likely already in K format (like 6.9, 7.2, etc.)
+        return rawValue.toFixed(1) + 'K'
+      } else {
+        // Raw data is in full numbers, needs conversion to K
+        return (rawValue / 1000).toFixed(1) + 'K'
+      }
+    } else if (value.includes('%')) {
+      // For percentage values, show one decimal place
+      return rawValue.toFixed(1) + '%'
+    } else if (value.includes('$')) {
+      // For dollar values, show whole numbers or one decimal for small amounts
+      return rawValue >= 1000 ? '$' + Math.round(rawValue).toLocaleString() : '$' + rawValue.toFixed(1)
+    } else if (value.includes(',')) {
+      // For comma-separated values, show whole numbers
+      return Math.round(rawValue).toLocaleString()
+    } else {
+      // For simple numbers, match decimal places of the main value
+      const mainDecimalPlaces = value.includes('.') ? value.split('.')[1].length : 0
+      return rawValue.toFixed(mainDecimalPlaces)
+    }
+  }
+  
   // Calculate chart points for SVG path with smoother curves
   const maxValue = Math.max(...chartData)
   const minValue = Math.min(...chartData)
   const range = maxValue - minValue || 1
-  const width = 40
+  const width = 58 // Adjusted for the narrower w-16 container
   const height = 20
   
   // Create points for polyline
@@ -132,15 +249,22 @@ const DataCard = ({ label, value, change, trend, chartData }: DataCardProps) => 
     return `${x},${y}`
   }).join(' ')
   
-  // Generate unique ID for gradients
-  const gradientId = `gradient-${label.replace(/\s+/g, '-')}-${Math.random().toString(36).substr(2, 9)}`
+  // Generate stable unique ID for gradients using label and value (deterministic)
+  const gradientId = useMemo(() => {
+    const labelHash = label.split(' ').join('-').toLowerCase()
+    const valueHash = value.split('').filter(char => {
+      const code = char.charCodeAt(0)
+      return (code >= 48 && code <= 57) || (code >= 65 && code <= 90) || (code >= 97 && code <= 122)
+    }).join('')
+    return `gradient-${labelHash}-${valueHash}`
+  }, [label, value])
   
   // Determine colors based on trend
   const getChartColor = () => {
     switch(trend) {
       case 'up': return '#10b981' // green
       case 'down': return '#ef4444' // red
-      case 'neutral': return '#eab308' // yellow
+      case 'neutral': return '#F0C351' // yellow
     }
   }
   
@@ -156,64 +280,62 @@ const DataCard = ({ label, value, change, trend, chartData }: DataCardProps) => 
   
   return (
     <div className={cn(
-      "relative w-32 h-[76px] rounded-lg p-2.5 bg-white dark:bg-slate-900",
-      "shadow-sm hover:shadow-md transition-all duration-300",
+      "relative w-36 h-[78px] rounded-lg p-2.5 bg-white dark:bg-slate-900",
+      "hover:bg-gray-50 dark:hover:bg-slate-800 transition-all duration-300 ease-out",
       "cursor-pointer group border border-slate-200/50 dark:border-slate-700/50",
-      "flex-shrink-0" // Prevent shrinking
+      "flex-shrink-0 hover:scale-110 hover:z-50 transform-gpu", // Increased z-index to 50
+      "hover:-translate-y-1" // Slight upward movement
     )}>
-      <div className="flex justify-between items-start h-full">
-        {/* Left side: Text content */}
-        <div className="flex flex-col justify-between h-full flex-1">
+      {/* Bento-style layout with three rows */}
+      <div className="flex flex-col h-full">
+        {/* Top row: Headline */}
+        <div className="flex-shrink-0 mb-2">
           <p className="text-[9px] text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider truncate">
             {label}
           </p>
-          <p className="text-sm font-bold text-slate-900 dark:text-slate-100 leading-tight">
-            {value}
-          </p>
-          <div className="flex items-center gap-0.5">
-            <span className={cn(
-              "text-[9px] font-medium",
-              getTrendTextColor()
-            )}>
-              {change}
-            </span>
-            <span className="text-[8px] text-slate-400 dark:text-slate-500">
-              vs last
-            </span>
-          </div>
         </div>
         
-        {/* Right side: Line chart */}
-        <div className="relative w-10 h-full flex items-center">
+        {/* Middle row: Value and Chart side by side */}
+        <div className="flex justify-between items-start flex-1">
+          <div className="flex-1">
+            <p className="text-sm font-bold text-slate-900 dark:text-slate-100 leading-tight -mt-1">
+              {value}
+            </p>
+          </div>
+          
+          {/* Chart container - made narrower and positioned higher */}
+          <div className="relative w-16 h-5 flex justify-end -mt-1">
           <svg 
             width={width} 
             height={height} 
-            className="absolute right-0"
+            className="absolute right-0 cursor-crosshair"
             viewBox={`0 0 ${width} ${height}`}
+            onMouseMove={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect()
+              const svgX = ((e.clientX - rect.left) / rect.width) * width
+              
+              // Find closest data point
+              const closestIndex = Math.round((svgX / width) * (chartData.length - 1))
+              const clampedIndex = Math.max(0, Math.min(chartData.length - 1, closestIndex))
+              
+              setHoveredIndex(clampedIndex)
+            }}
+            onMouseLeave={() => setHoveredIndex(null)}
           >
-            {/* Gradient definition */}
+            {/* Drop shadow filter definition - enhanced visibility */}
             <defs>
-              <linearGradient id={gradientId} x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop 
-                  offset="0%" 
-                  stopColor={chartColor} 
-                  stopOpacity="0.25"
+              <filter id={`shadow-${gradientId}`} x="-30%" y="-30%" width="160%" height="160%">
+                <feDropShadow 
+                  dx="0" 
+                  dy="3" 
+                  stdDeviation="2.5" 
+                  floodColor={chartColor}
+                  floodOpacity="0.4"
                 />
-                <stop 
-                  offset="100%" 
-                  stopColor={chartColor} 
-                  stopOpacity="0.05"
-                />
-              </linearGradient>
+              </filter>
             </defs>
             
-            {/* Area under the line */}
-            <path
-              d={`M ${points} L ${width},${height} L 0,${height} Z`}
-              fill={`url(#${gradientId})`}
-            />
-            
-            {/* Line */}
+            {/* Main smooth line with drop shadow */}
             <polyline
               points={points}
               fill="none"
@@ -221,26 +343,84 @@ const DataCard = ({ label, value, change, trend, chartData }: DataCardProps) => 
               strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
+              filter={`url(#shadow-${gradientId})`}
             />
             
-            {/* Dots on data points for more visual interest */}
-            {chartData.map((val, i) => {
-              const x = (i / (chartData.length - 1)) * width
-              const y = height - ((val - minValue) / range) * height
+            {/* Hover indicator */}
+            {hoveredIndex !== null && (() => {
+              const hoverX = (hoveredIndex / (chartData.length - 1)) * width
+              const hoverY = height - ((chartData[hoveredIndex] - minValue) / range) * height
               return (
-                <circle
-                  key={i}
-                  cx={x}
-                  cy={y}
-                  r="1"
-                  fill={chartColor}
-                  opacity="0.8"
-                />
+                <>
+                  {/* Vertical line */}
+                  <line
+                    x1={hoverX}
+                    y1={0}
+                    x2={hoverX}
+                    y2={height}
+                    stroke={chartColor}
+                    strokeWidth="1"
+                    opacity="0.5"
+                    strokeDasharray="2,2"
+                  />
+                  {/* Hover point */}
+                  <circle
+                    cx={hoverX}
+                    cy={hoverY}
+                    r="3"
+                    fill={chartColor}
+                    stroke="white"
+                    strokeWidth="1.5"
+                  />
+                </>
               )
-            })}
+            })()}
           </svg>
+          </div>
+        </div>
+        
+        {/* Bottom row: Full-width percentage change and period */}
+        <div className="flex-shrink-0">
+          <div className="flex items-center gap-1">
+            <span className={cn(
+              "text-[10px] font-medium",
+              getTrendTextColor()
+            )}>
+              {change}
+            </span>
+            <span className="text-[9px] text-slate-400 dark:text-slate-500">
+              {period}
+            </span>
+          </div>
         </div>
       </div>
+        
+      {/* Absolutely positioned tooltip - positioned relative to the chart area */}
+      {hoveredIndex !== null && (() => {
+        // Calculate the position of the data point relative to the card
+        const hoverX = (hoveredIndex / (chartData.length - 1)) * width
+        const hoverY = height - ((chartData[hoveredIndex] - minValue) / range) * height
+        
+        // Position tooltip relative to the chart container in the new bento layout
+        // Chart is now in the middle row, positioned at the right
+        const chartOffsetX = 144 - 64 // Card width (144px = w-36) minus chart width (64px = w-16)
+        const tooltipLeft = chartOffsetX + hoverX - 3 // Small adjustment for better centering
+        const tooltipTop = 24 + hoverY // Accounts for headline (16px) + minimal spacing + middle row positioning
+        
+        return (
+          <div 
+            className="absolute pointer-events-none z-50 text-[8px] font-medium tabular-nums"
+            style={{
+              left: tooltipLeft,
+              top: tooltipTop - 20, // Position above the data point
+              transform: 'translateX(-50%)', // This centers the tooltip on the vertical line
+              color: chartColor, // Use the same color as the graph line
+            }}
+          >
+            {formatTooltipValue(chartData[hoveredIndex])}
+          </div>
+        )
+      })()}
     </div>
   )
 }
@@ -249,12 +429,12 @@ export default function InteractiveVisualization() {
   return (
     <div className="relative w-full h-full overflow-hidden">
       {/* Three-row marquee container - no background or borders */}
-      <div className="relative h-full flex flex-col justify-center gap-2">
+      <div className="relative h-full flex flex-col justify-center gap-1">
           {/* First row - scrolling left */}
           <div className="relative overflow-hidden">
             <Marquee 
               pauseOnHover 
-              className="[--duration:60s] [--gap:1.5rem]"
+              className="[--duration:60s] [--gap:0.75rem]"
             >
               {firstRow.map((card) => (
                 <DataCard key={card.id} {...card} />
@@ -267,7 +447,7 @@ export default function InteractiveVisualization() {
             <Marquee 
               reverse
               pauseOnHover 
-              className="[--duration:70s] [--gap:1.5rem]"
+              className="[--duration:70s] [--gap:0.75rem]"
             >
               {secondRow.map((card) => (
                 <DataCard key={card.id} {...card} />
@@ -279,7 +459,7 @@ export default function InteractiveVisualization() {
           <div className="relative overflow-hidden">
             <Marquee 
               pauseOnHover 
-              className="[--duration:65s] [--gap:1.5rem]"
+              className="[--duration:65s] [--gap:0.75rem]"
             >
               {thirdRow.map((card) => (
                 <DataCard key={card.id} {...card} />
@@ -287,9 +467,13 @@ export default function InteractiveVisualization() {
             </Marquee>
           </div>
           
-        {/* Gradient fade edges - matching parent background */}
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-background to-transparent z-10" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-background to-transparent z-10" />
+        {/* Enhanced gradient fade edges - using specific #FAFAFA background color */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-[#FAFAFA] via-[#FAFAFA]/80 to-transparent z-10" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-[#FAFAFA] via-[#FAFAFA]/80 to-transparent z-10" />
+        
+        {/* Additional subtle inner gradient for smoother transition */}
+        <div className="pointer-events-none absolute inset-y-0 left-16 w-8 bg-gradient-to-r from-[#FAFAFA]/60 to-transparent z-[9]" />
+        <div className="pointer-events-none absolute inset-y-0 right-16 w-8 bg-gradient-to-l from-[#FAFAFA]/60 to-transparent z-[9]" />
       </div>
     </div>
   )

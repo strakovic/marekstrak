@@ -1,0 +1,8 @@
+.text-block {
+  /* No default styling to preserve parent styles */
+}
+
+.char {
+  will-change: transform;
+  display: inline-block;
+}

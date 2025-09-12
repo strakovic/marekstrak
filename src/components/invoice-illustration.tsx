@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils'
 import { LogoIcon } from '@/components/logo'
 import { DocumentIllustation } from "@/components/document-illustration"
+import NumberTicker from '@/components/magicui/number-ticker'
 
 export const InvoiceIllustration = ({ className }: { className?: string }) => {
     return (
@@ -8,12 +9,20 @@ export const InvoiceIllustration = ({ className }: { className?: string }) => {
             aria-hidden
             className="relative">
             <div className={cn('mask-b-from-65% group relative -mx-4 px-4 pt-6', className)}>
-                <div className="bg-illustration ring-border-illustration relative z-10 overflow-hidden rounded-2xl p-8 text-sm shadow-xl shadow-black/10 ring-1">
+                <div className="bg-illustration relative z-10 overflow-hidden rounded-2xl p-8 text-sm shadow-xl shadow-black/10 border border-foreground/10">
                     <div className="mb-6 flex items-start justify-between">
                         <div className="space-y-0.5">
                             <LogoIcon />
                             <div className="mt-4 font-mono text-xs">INV-456789</div>
-                            <div className="mt-1 -translate-x-1 font-mono text-2xl font-semibold">$284,342.57</div>
+                            <div className="mt-1 -translate-x-1 font-mono text-2xl font-semibold">
+                                $<NumberTicker 
+                                    value={284342.57}
+                                    startValue={0}
+                                    delay={0.5}
+                                    decimalPlaces={2}
+                                    className="font-mono text-2xl font-semibold"
+                                />
+                            </div>
                             <div className="text-xs font-medium">Due in 15 days</div>
                         </div>
                         <DocumentIllustation />

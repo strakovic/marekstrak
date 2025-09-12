@@ -118,6 +118,24 @@
     }
   }
   
+  @keyframes pulseShadow {
+    0%, 100% {
+      box-shadow: rgba(34, 197, 94, 0.6) 0px 0px 12px 2px;
+    }
+    50% {
+      box-shadow: rgba(34, 197, 94, 0.2) 0px 0px 4px 1px;
+    }
+  }
+  
+  @keyframes pulseShadowGreen {
+    0%, 100% {
+      box-shadow: 0 0 6px 3px rgba(34, 197, 94, 0.7);
+    }
+    50% {
+      box-shadow: 0 0 2px 2px rgba(34, 197, 94, 0.3);
+    }
+  }
+  
   --animate-marquee: marquee var(--duration) linear infinite;
   --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
 }
@@ -213,6 +231,15 @@
 }
 
 @layer utilities {
+  /* Remove stroke from invoice illustration */
+  .no-stroke {
+    border: none !important;
+    outline: none !important;
+    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25) !important;
+    --tw-ring-shadow: none !important;
+    --tw-ring-offset-shadow: none !important;
+  }
+  
   /* Reduce motion for users who prefer it */
   @media (prefers-reduced-motion: reduce) {
     *,
@@ -251,6 +278,11 @@
   .font-neue-montreal-medium {
     font-family: var(--font-neue-montreal), ui-sans-serif, system-ui, sans-serif;
     font-weight: 500;
+  }
+  
+  /* Green pulse animation for live indicator */
+  .animate-pulse-green {
+    animation: pulseShadowGreen 2s ease-in-out infinite;
   }
   
   /* Shiny text animation keyframes */
