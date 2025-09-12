@@ -283,6 +283,8 @@ const ActivityGraph = ({ data, predictions, isAnimating, unitPrice, currentAmoun
 }
 
 export const InvoiceCard = ({ className }: { className?: string }) => {
+    const [shakeInput, setShakeInput] = useState<string | null>(null)
+    
     // Generate models first as we need them for calculations
     const generateModels = (): ModelData[] => {
         const availableModels = ['gpt-5', 'gpt-4.2', 'gpt-4o', 'o3', 'o4-mini', 'gpt-4.1']
@@ -689,16 +691,37 @@ export const InvoiceCard = ({ className }: { className?: string }) => {
                                             onChange={(e) => {
                                                 const value = e.target.value
                                                 // Only allow numbers and one decimal point
-                                                if (/^\d*\.?\d*$/.test(value) && value.length <= 7) {
-                                                    setEditingPrice(value)
+                                                if (/^\d*\.?\d*$/.test(value)) {
+                                                    if (value.length <= 7) {
+                                                        setEditingPrice(value)
+                                                    } else {
+                                                        // Trigger shake animation
+                                                        setShakeInput(model.id)
+                                                        setTimeout(() => setShakeInput(null), 200)
+                                                    }
                                                 }
                                             }}
-                                            className="w-16 h-6 text-xs px-1"
+                                            className={cn(
+                                                "w-16 h-6 text-xs px-1",
+                                                shakeInput === model.id && "animate-shake"
+                                            )}
                                             maxLength={7}
                                             autoFocus
                                             onKeyDown={(e) => {
-                                                if (e.key === 'Enter') handleSavePrice(model.id)
-                                                if (e.key === 'Escape') handleCancelEdit()
+                                                if (e.key === 'Enter') {
+                                                    handleSavePrice(model.id)
+                                                } else if (e.key === 'Escape') {
+                                                    handleCancelEdit()
+                                                } else if (
+                                                    editingPrice.length >= 7 && 
+                                                    !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key) &&
+                                                    !e.ctrlKey && !e.metaKey
+                                                ) {
+                                                    // Shake on any character input when at limit
+                                                    e.preventDefault()
+                                                    setShakeInput(model.id)
+                                                    setTimeout(() => setShakeInput(null), 200)
+                                                }
                                             }}
                                         />
                                         <Button
