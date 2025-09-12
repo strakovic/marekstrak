@@ -686,10 +686,16 @@ export const InvoiceCard = ({ className }: { className?: string }) => {
                                         <Input
                                             type="number"
                                             value={editingPrice}
-                                            onChange={(e) => setEditingPrice(e.target.value)}
+                                            onChange={(e) => {
+                                                // Limit to 5 characters
+                                                if (e.target.value.length <= 5) {
+                                                    setEditingPrice(e.target.value)
+                                                }
+                                            }}
                                             className="w-16 h-6 text-xs px-1"
                                             step="0.001"
                                             min="0"
+                                            max="9.999"
                                             autoFocus
                                             onKeyDown={(e) => {
                                                 if (e.key === 'Enter') handleSavePrice(model.id)
