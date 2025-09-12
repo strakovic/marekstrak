@@ -684,18 +684,17 @@ export const InvoiceCard = ({ className }: { className?: string }) => {
                                 {editingModelId === model.id ? (
                                     <div className="flex items-center gap-1">
                                         <Input
-                                            type="number"
+                                            type="text"
                                             value={editingPrice}
                                             onChange={(e) => {
-                                                // Limit to 5 characters
-                                                if (e.target.value.length <= 5) {
-                                                    setEditingPrice(e.target.value)
+                                                const value = e.target.value
+                                                // Only allow numbers and one decimal point
+                                                if (/^\d*\.?\d*$/.test(value) && value.length <= 5) {
+                                                    setEditingPrice(value)
                                                 }
                                             }}
                                             className="w-16 h-6 text-xs px-1"
-                                            step="0.001"
-                                            min="0"
-                                            max="9.999"
+                                            maxLength={5}
                                             autoFocus
                                             onKeyDown={(e) => {
                                                 if (e.key === 'Enter') handleSavePrice(model.id)
