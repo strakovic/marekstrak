@@ -8,6 +8,7 @@ import { Menu, X, Shield, SquareActivity, Sparkles, Cpu, Gem, ShoppingBag, BookO
 import { useMedia } from '@/hooks/use-media'
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { cn } from '@/lib/utils'
+import { AnimatedThemeToggler } from '@/components/magicui/animated-theme-toggler'
 
 interface FeatureLink {
     href: string
@@ -156,23 +157,41 @@ export default function HeaderOne() {
                                 <Link
                                     href="/"
                                     aria-label="home"
-                                    className="flex items-center space-x-2">
-                                    <Image
-                                        src="/billr.svg"
-                                        alt="Billr"
-                                        width={78}
-                                        height={18}
-                                        className="h-5 w-auto"
-                                    />
+                                    className="flex flex-row items-center"
+                                    style={{
+                                        gap: '6px' // 7px * 0.9 = 6.3px ≈ 6px
+                                    }}>
+                                    <div 
+                                        className="bg-[#F9620C] dark:bg-[#F9620C] transform rotate-90 flex-shrink-0"
+                                        style={{
+                                            width: '13px',   // 15px * 0.9 = 13.5px ≈ 13px
+                                            height: '13px',  // 15px * 0.9 = 13.5px ≈ 13px
+                                            transform: 'rotate(90deg)'
+                                        }}
+                                    ></div>
+                                    <span 
+                                        className="font-neue-montreal font-medium text-[#010B11] dark:text-white flex items-center leading-none"
+                                        style={{
+                                            fontFamily: 'PP Neue Montreal, var(--font-neue-montreal)',
+                                            fontWeight: 500,
+                                            fontSize: '25px',  // 28px * 0.9 = 25.2px ≈ 25px
+                                            lineHeight: '1'
+                                        }}
+                                    >
+                                        Billr
+                                    </span>
                                 </Link>
 
-                                <button
-                                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                                    aria-label={isMobileMenuOpen == true ? 'Close Menu' : 'Open Menu'}
-                                    className="relative z-20 -m-2.5 -mr-3 block cursor-pointer p-2.5 lg:hidden">
-                                    <Menu className="in-data-[state=active]:rotate-180 in-data-[state=active]:scale-0 in-data-[state=active]:opacity-0 m-auto size-5 duration-200" />
-                                    <X className="in-data-[state=active]:rotate-0 in-data-[state=active]:scale-100 in-data-[state=active]:opacity-100 absolute inset-0 m-auto size-5 -rotate-180 scale-0 opacity-0 duration-200" />
-                                </button>
+                                <div className="flex items-center gap-2 lg:hidden">
+                                    <AnimatedThemeToggler />
+                                    <button
+                                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                                        aria-label={isMobileMenuOpen == true ? 'Close Menu' : 'Open Menu'}
+                                        className="relative z-20 -m-2.5 -mr-3 block cursor-pointer p-2.5">
+                                        <Menu className="in-data-[state=active]:rotate-180 in-data-[state=active]:scale-0 in-data-[state=active]:opacity-0 m-auto size-5 duration-200" />
+                                        <X className="in-data-[state=active]:rotate-0 in-data-[state=active]:scale-100 in-data-[state=active]:opacity-100 absolute inset-0 m-auto size-0 -rotate-180 scale-2 opacity-0 duration-200" />
+                                    </button>
+                                </div>
                             </div>
 
                             {isLarge && (
@@ -182,8 +201,8 @@ export default function HeaderOne() {
                             )}
                             {!isLarge && isMobileMenuOpen && <MobileMenu closeMenu={() => setIsMobileMenuOpen(false)} />}
 
-                            <div className="max-lg:in-data-[state=active]:mt-6 in-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
-                                <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
+                            <div className="max-lg:in-data-[state=active]:mt-6 in-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
+                                <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit items-center">
                                     <Button
                                         asChild
                                         variant="outline"
@@ -199,6 +218,7 @@ export default function HeaderOne() {
                                             <span>Get Started</span>
                                         </Link>
                                     </Button>
+                                    <AnimatedThemeToggler className="text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white ml-3" />
                                 </div>
                             </div>
                         </div>
@@ -266,6 +286,10 @@ const MobileMenu = ({ closeMenu }: { closeMenu: () => void }) => {
                 }
                 return null
             })}
+            <div className="flex items-center justify-between py-4">
+                <span className="text-lg">Theme</span>
+                <AnimatedThemeToggler />
+            </div>
         </nav>
     )
 }

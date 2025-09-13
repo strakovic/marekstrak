@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import { HeroUIProvider } from "@heroui/system";
+import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -42,6 +43,10 @@ export const metadata: Metadata = {
   icons: {
     icon: '/favicon-billr.png',
   },
+  other: {
+    // Help with DarkReader compatibility
+    'darkreader-lock': '',
+  },
 };
 
 export default function RootLayout({
@@ -50,13 +55,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html 
+      lang="en"
+      suppressHydrationWarning
+    >
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${neueMontreal.variable} antialiased`}
+        suppressHydrationWarning
       >
-        <HeroUIProvider>
-          {children}
-        </HeroUIProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem={false}
+          disableTransitionOnChange={false}
+        >
+          <HeroUIProvider>
+            {children}
+          </HeroUIProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

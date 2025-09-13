@@ -13,6 +13,8 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Help with hydration issues caused by browser extensions
+  reactStrictMode: true,
 };
 
 export default nextConfig;

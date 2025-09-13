@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
-import React, { useEffect, useId, useRef, useState } from "react";
+import React, { useEffect, useId, useRef, useState, useMemo } from "react";
 
 interface DotPatternProps extends React.SVGProps<SVGSVGElement> {
     width?: number;
@@ -14,6 +14,8 @@ interface DotPatternProps extends React.SVGProps<SVGSVGElement> {
     cr?: number;
     className?: string;
     glow?: boolean;
+    static?: boolean; // New prop to disable animations
+    maxDots?: number; // Limit number of dots for performance
     [key: string]: unknown;
 }
 
@@ -27,13 +29,22 @@ export function DotPattern({
     cr = 1,
     className,
     glow = false,
+    static: isStatic = true, // Default to static for performance
+    maxDots = 500, // Reasonable limit
     ...props
 }: DotPatternProps) {
     const id = useId();
     const containerRef = useRef<SVGSVGElement>(null);
     const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+    const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    useEffect(() => {
+        if (!isMounted) return;
+        
         const updateDimensions = () => {
             if (containerRef.current) {
                 const { width, height } = containerRef.current.getBoundingClientRect();
@@ -44,25 +55,27 @@ export function DotPattern({
         updateDimensions();
         window.addEventListener("resize", updateDimensions);
         return () => window.removeEventListener("resize", updateDimensions);
-    }, []);
+    }, [isMounted]);
 
-    const dots = Array.from(
-        {
-            length:
-                Math.ceil(dimensions.width / width) *
-                Math.ceil(dimensions.height / height),
-        },
-        (_, i) => {
+    const totalDots = Math.min(
+        Math.ceil(dimensions.width / width) * Math.ceil(dimensions.height / height),
+        maxDots
+    );
+
+    const dots = useMemo(() => {
+        if (!isMounted || dimensions.width === 0 || dimensions.height === 0) return [];
+        
+        return Array.from({ length: totalDots }, (_, i) => {
             const col = i % Math.ceil(dimensions.width / width);
             const row = Math.floor(i / Math.ceil(dimensions.width / width));
             return {
                 x: col * width + cx,
                 y: row * height + cy,
-                delay: Math.random() * 5,
-                duration: Math.random() * 3 + 2,
+                delay: isStatic ? 0 : Math.random() * 5,
+                duration: isStatic ? 0 : Math.random() * 3 + 2,
             };
-        },
-    );
+        });
+    }, [isMounted, dimensions.width, dimensions.height, width, height, cx, cy, totalDots, isStatic]);
 
     return (
         <svg
@@ -80,36 +93,44 @@ export function DotPattern({
                     <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
                 </radialGradient>
             </defs>
-            {dots.map((dot) => (
-                <motion.circle
-                    key={`${dot.x}-${dot.y}`}
-                    cx={dot.x}
-                    cy={dot.y}
-                    r={cr}
-                    fill={glow ? `url(#${id}-gradient)` : "currentColor"}
-                    className="text-neutral-400/60"
-                    initial={glow ? { opacity: 0.4, scale: 1 } : {}}
-                    animate={
-                        glow
-                            ? {
-                                  opacity: [0.4, 1, 0.4],
-                                  scale: [1, 1.5, 1],
-                              }
-                            : {}
-                    }
-                    transition={
-                        glow
-                            ? {
-                                  duration: dot.duration,
-                                  repeat: Infinity,
-                                  repeatType: "reverse",
-                                  delay: dot.delay,
-                                  ease: "easeInOut",
-                              }
-                            : {}
-                    }
-                />
-            ))}
+            {dots.map((dot) => {
+                // Use regular circle for static dots to save on motion overhead
+                if (isStatic || !glow) {
+                    return (
+                        <circle
+                            key={`${dot.x}-${dot.y}`}
+                            cx={dot.x}
+                            cy={dot.y}
+                            r={cr}
+                            fill={glow ? `url(#${id}-gradient)` : "currentColor"}
+                            className="text-neutral-400/60"
+                        />
+                    );
+                }
+                
+                return (
+                    <motion.circle
+                        key={`${dot.x}-${dot.y}`}
+                        cx={dot.x}
+                        cy={dot.y}
+                        r={cr}
+                        fill={`url(#${id}-gradient)`}
+                        className="text-neutral-400/60"
+                        initial={{ opacity: 0.4, scale: 1 }}
+                        animate={{
+                            opacity: [0.4, 1, 0.4],
+                            scale: [1, 1.5, 1],
+                        }}
+                        transition={{
+                            duration: dot.duration,
+                            repeat: Infinity,
+                            repeatType: "reverse",
+                            delay: dot.delay,
+                            ease: "easeInOut",
+                        }}
+                    />
+                );
+            })}
         </svg>
     );
 }

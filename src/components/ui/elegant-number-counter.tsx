@@ -38,11 +38,13 @@ const Digit: React.FC<DigitProps & { animationKey: number }> = ({ digit, isChang
 interface ElegantNumberCounterProps {
   startingNumber?: number;
   className?: string;
+  disabled?: boolean;
 }
 
 export default function ElegantNumberCounter({ 
   startingNumber = 200000,
-  className = ""
+  className = "",
+  disabled = false
 }: ElegantNumberCounterProps) {
   const [currentNumber, setCurrentNumber] = useState(startingNumber);
   const [previousNumber, setPreviousNumber] = useState(startingNumber);
@@ -50,15 +52,23 @@ export default function ElegantNumberCounter({
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    // Start the interval to update the number every 2.5 seconds
-    intervalRef.current = setInterval(() => {
-      setCurrentNumber(prev => {
-        setPreviousNumber(prev);
-        const randomIncrement = Math.floor(Math.random() * 201) + 50; // 50-250
-        setAnimationKey(k => k + 1); // Increment key to sync all animations
-        return prev + randomIncrement;
-      });
-    }, 2500); // Update every 2.5 seconds for slower counting
+    // Clear existing interval when disabled state changes
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
+    // Only start the interval if not disabled
+    if (!disabled) {
+      intervalRef.current = setInterval(() => {
+        setCurrentNumber(prev => {
+          setPreviousNumber(prev);
+          const randomIncrement = Math.floor(Math.random() * 201) + 50; // 50-250
+          setAnimationKey(k => k + 1); // Increment key to sync all animations
+          return prev + randomIncrement;
+        });
+      }, 2500); // Update every 2.5 seconds for slower counting
+    }
 
     // Cleanup on unmount
     return () => {
@@ -66,7 +76,7 @@ export default function ElegantNumberCounter({
         clearInterval(intervalRef.current);
       }
     };
-  }, []);
+  }, [disabled]);
 
   // Format numbers with commas
   const formatNumber = (num: number) => {

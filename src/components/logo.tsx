@@ -34,11 +34,17 @@ export const Logo = ({ className, uniColor }: { className?: string; uniColor?: b
     )
 }
 
-export const LogoIcon = ({ className }: { className?: string }) => {
+export const LogoIcon = ({ className, isPaused }: { 
+    className?: string
+    isPaused?: boolean
+}) => {
     return (
-        <div className={cn('inline-flex items-center gap-1.5 px-2 py-1 bg-background border border-foreground/10 rounded-full text-xs font-medium', className)}>
-            <div className="relative w-2 h-2 bg-green-500 rounded-full animate-pulse-green"></div>
-            <span className="text-muted-foreground uppercase tracking-wide">Live</span>
+        <div className={cn('inline-flex items-center gap-1.5 px-3 py-1.5 bg-background border border-foreground/10 rounded-full text-xs font-medium whitespace-nowrap', className)}>
+            <div className={cn(
+                "relative w-2 h-2 rounded-full transition-all duration-300 flex-shrink-0",
+                isPaused ? "bg-yellow-500" : "bg-green-500 animate-pulse-green"
+            )}></div>
+            <span className="text-muted-foreground uppercase tracking-wide text-[10px] font-light">LIVE INVOICING</span>
         </div>
     )
 }

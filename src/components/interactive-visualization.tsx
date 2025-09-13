@@ -19,10 +19,10 @@ const firstRow = [
     id: 2,
     label: "Churn",
     value: "5.6%",
-    change: "+1.4%",
+    change: "−1.4%",
     period: "vs yesterday",
     trend: "down" as const,
-    chartData: [5.52, 5.48, 5.38, 5.44, 5.51, 5.61, 5.58, 5.42, 5.29, 5.35, 5.48, 5.62, 5.74, 5.69, 5.53, 5.47, 5.51, 5.58, 5.62, 5.59, 5.6]
+    chartData: [5.92, 5.88, 5.78, 5.84, 5.81, 5.91, 5.88, 5.82, 5.79, 5.75, 5.78, 5.72, 5.74, 5.69, 5.63, 5.67, 5.61, 5.58, 5.62, 5.59, 5.6]
   },
   {
     id: 3,
@@ -46,10 +46,10 @@ const firstRow = [
     id: 5,
     label: "Failures",
     value: "1,123",
-    change: "+7.2%",
+    change: "−2.8%",
     period: "vs last week",
     trend: "down" as const,
-    chartData: [1047, 1058, 1089, 1072, 1045, 1024, 1038, 1067, 1134, 1125, 1098, 1076, 1089, 1102, 1098, 1115, 1108, 1123, 1119, 1121, 1123]
+    chartData: [1287, 1258, 1239, 1252, 1225, 1204, 1218, 1197, 1184, 1175, 1168, 1156, 1149, 1142, 1138, 1135, 1128, 1123, 1129, 1121, 1123]
   },
   {
     id: 6,
@@ -76,7 +76,7 @@ const secondRow = [
     id: 8,
     label: "Retries",
     value: "812",
-    change: "+3.5%",
+    change: "−1.2%",
     period: "vs last month",
     trend: "down" as const,
     chartData: [784, 789, 798, 791, 785, 771, 778, 791, 819, 815, 808, 795, 799, 803, 806, 809, 805, 812, 808, 810, 812]
@@ -103,10 +103,10 @@ const secondRow = [
     id: 11,
     label: "Disputes",
     value: "62",
-    change: "+4.8%",
+    change: "−3.5%",
     period: "vs last week",
     trend: "down" as const,
-    chartData: [59.2, 59.8, 61.1, 60.5, 59.1, 58.4, 58.9, 59.6, 60.7, 60.2, 59.5, 59.8, 60.4, 60.9, 61.3, 61.7, 61.2, 61.8, 62.1, 61.9, 62]
+    chartData: [74.2, 72.8, 71.1, 70.5, 69.1, 68.4, 67.9, 66.6, 65.7, 65.2, 64.5, 63.8, 63.4, 62.9, 62.3, 62.7, 62.2, 61.8, 62.1, 61.9, 62]
   },
   {
     id: 12,
@@ -151,7 +151,7 @@ const thirdRow = [
     id: 16,
     label: "Unpriced",
     value: "4,218",
-    change: "+6.9%",
+    change: "−4.1%",
     period: "vs yesterday",
     trend: "down" as const,
     chartData: [3946, 3978, 4089, 4052, 3958, 3821, 3887, 3965, 4156, 4121, 4087, 4023, 4058, 4091, 4134, 4167, 4189, 4203, 4218, 4201, 4218]
@@ -178,7 +178,7 @@ const thirdRow = [
     id: 19,
     label: "Leakage",
     value: "3.5K",
-    change: "+9.1%",
+    change: "−5.7%",
     period: "vs last week",
     trend: "down" as const,
     chartData: [3.21, 3.28, 3.34, 3.31, 3.19, 3.08, 3.15, 3.24, 3.42, 3.38, 3.32, 3.26, 3.29, 3.34, 3.38, 3.42, 3.45, 3.47, 3.5, 3.48, 3.5]
@@ -187,7 +187,7 @@ const thirdRow = [
     id: 20,
     label: "Delays",
     value: "118",
-    change: "+2.7%",
+    change: "−6.2%",
     period: "vs last quarter",
     trend: "down" as const,
     chartData: [115, 114, 112, 113, 115, 117, 116, 114, 109, 111, 114, 118, 121, 119, 117, 116, 117, 118, 119, 118, 118]
@@ -280,9 +280,9 @@ const DataCard = ({ label, value, change, period, trend, chartData }: DataCardPr
   
   return (
     <div className={cn(
-      "relative w-36 h-[78px] rounded-lg p-2.5 bg-white dark:bg-slate-900",
-      "hover:bg-gray-50 dark:hover:bg-slate-800 transition-all duration-300 ease-out",
-      "cursor-pointer group border border-slate-200/50 dark:border-slate-700/50",
+      "relative w-36 h-[78px] rounded-lg p-2.5 bg-white dark:bg-[#181818]",
+      "hover:bg-gray-50 dark:hover:bg-[#202020] transition-all duration-300 ease-out",
+      "cursor-pointer group border border-slate-200/50 dark:border-[#282828]",
       "flex-shrink-0 hover:scale-110 hover:z-50 transform-gpu", // Increased z-index to 50
       "hover:-translate-y-1" // Slight upward movement
     )}>
@@ -467,13 +467,13 @@ export default function InteractiveVisualization() {
             </Marquee>
           </div>
           
-        {/* Enhanced gradient fade edges - using specific #FAFAFA background color */}
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-[#FAFAFA] via-[#FAFAFA]/80 to-transparent z-10" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-[#FAFAFA] via-[#FAFAFA]/80 to-transparent z-10" />
+        {/* Enhanced gradient fade edges - responsive to theme background */}
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-[#FAFAFA] via-[#FAFAFA]/80 to-transparent dark:from-[#181818] dark:via-[#181818]/80 z-10" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-[#FAFAFA] via-[#FAFAFA]/80 to-transparent dark:from-[#181818] dark:via-[#181818]/80 z-10" />
         
         {/* Additional subtle inner gradient for smoother transition */}
-        <div className="pointer-events-none absolute inset-y-0 left-16 w-8 bg-gradient-to-r from-[#FAFAFA]/60 to-transparent z-[9]" />
-        <div className="pointer-events-none absolute inset-y-0 right-16 w-8 bg-gradient-to-l from-[#FAFAFA]/60 to-transparent z-[9]" />
+        <div className="pointer-events-none absolute inset-y-0 left-16 w-8 bg-gradient-to-r from-[#FAFAFA]/60 to-transparent dark:from-[#181818]/60 z-[9]" />
+        <div className="pointer-events-none absolute inset-y-0 right-16 w-8 bg-gradient-to-l from-[#FAFAFA]/60 to-transparent dark:from-[#181818]/60 z-[9]" />
       </div>
     </div>
   )

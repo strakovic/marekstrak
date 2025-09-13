@@ -10,7 +10,10 @@ interface ShinyTextProps {
 }
 
 const ShinyText = ({ text, disabled = false, speed = 5, className = '' }: ShinyTextProps) => {
-  const shimmerStyle = {
+  // Only animate on hover to save GPU
+  const shimmerStyle = disabled ? {
+    color: 'currentColor'
+  } : {
     backgroundImage: `linear-gradient(
       120deg,
       rgba(60, 60, 60, 1) 0%,
@@ -25,10 +28,13 @@ const ShinyText = ({ text, disabled = false, speed = 5, className = '' }: ShinyT
     backgroundClip: 'text',
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
-    animation: disabled ? 'none' : `shimmer ${speed}s linear infinite`,
+    animation: `shimmer ${speed}s linear infinite`,
+    animationPlayState: 'paused'
   }
   
-  const darkShimmerStyle = {
+  const darkShimmerStyle = disabled ? {
+    color: 'currentColor'
+  } : {
     backgroundImage: `linear-gradient(
       120deg,
       rgba(180, 180, 180, 1) 0%,
@@ -43,20 +49,41 @@ const ShinyText = ({ text, disabled = false, speed = 5, className = '' }: ShinyT
     backgroundClip: 'text',
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
-    animation: disabled ? 'none' : `shimmer ${speed}s linear infinite`,
+    animation: `shimmer ${speed}s linear infinite`,
+    animationPlayState: 'paused'
   }
 
   return (
     <>
       <span 
-        className={cn('inline-block dark:hidden', className)}
+        className={cn('inline-block dark:hidden hover-shiny', className)}
         style={shimmerStyle}
+        onMouseEnter={(e) => {
+          if (!disabled) {
+            e.currentTarget.style.animationPlayState = 'running';
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (!disabled) {
+            e.currentTarget.style.animationPlayState = 'paused';
+          }
+        }}
       >
         {text}
       </span>
       <span 
-        className={cn('hidden dark:inline-block', className)}
+        className={cn('hidden dark:inline-block hover-shiny', className)}
         style={darkShimmerStyle}
+        onMouseEnter={(e) => {
+          if (!disabled) {
+            e.currentTarget.style.animationPlayState = 'running';
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (!disabled) {
+            e.currentTarget.style.animationPlayState = 'paused';
+          }
+        }}
       >
         {text}
       </span>

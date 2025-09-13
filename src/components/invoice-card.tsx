@@ -9,7 +9,7 @@ import { Button as HeroUIButton } from '@heroui/button'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
-import { Pencil, Check, X, Bell, Send, Download, Share2, FileText } from 'lucide-react'
+import { Pencil, Check, X, Bell, Send, Download, Share2, FileText, Play, Pause } from 'lucide-react'
 
 interface InvoiceData {
     id: string
@@ -30,14 +30,15 @@ interface ModelData {
 }
 
 // Activity Graph Component
-const ActivityGraph = ({ data, predictions, isAnimating, unitPrice, currentAmount, predictedAmount, originalUnitPrice }: { 
+const ActivityGraph = ({ data, predictions, isAnimating, unitPrice, currentAmount, predictedAmount, originalUnitPrice, isPaused }: { 
     data: number[], 
     predictions: number[],
     isAnimating: boolean,
     unitPrice: number,
     currentAmount: number,
     predictedAmount: number,
-    originalUnitPrice?: number
+    originalUnitPrice?: number,
+    isPaused?: boolean
 }) => {
     const svgRef = useRef<SVGSVGElement>(null)
     const [pathLength, setPathLength] = useState(0)
@@ -235,7 +236,7 @@ const ActivityGraph = ({ data, predictions, isAnimating, unitPrice, currentAmoun
                     fill="none"
                     stroke="#F9620C"
                     strokeWidth={2}
-                    strokeOpacity={0.4}
+                    strokeOpacity={isPaused ? 0.2 : 0.4}
                     strokeDasharray="4 4"
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -247,7 +248,7 @@ const ActivityGraph = ({ data, predictions, isAnimating, unitPrice, currentAmoun
                     cy={graphHeight - (graphData[graphData.length - 1] / maxValue) * graphHeight}
                     r={3}
                     fill="#F9620C"
-                    className={isAnimating ? 'animate-pulse' : ''}
+                    className={isAnimating && !isPaused ? 'animate-pulse' : ''}
                 />
                 
                 {/* Hover dot on line */}
@@ -284,6 +285,7 @@ const ActivityGraph = ({ data, predictions, isAnimating, unitPrice, currentAmoun
 
 export const InvoiceCard = ({ className }: { className?: string }) => {
     const [shakeInput, setShakeInput] = useState<string | null>(null)
+    const [isLivePaused, setIsLivePaused] = useState(false)
     
     // Generate models first as we need them for calculations
     const generateModels = (): ModelData[] => {
@@ -440,11 +442,11 @@ export const InvoiceCard = ({ className }: { className?: string }) => {
     
     const handleSavePrice = (modelId: string) => {
         const newPrice = parseFloat(editingPrice)
-        if (!isNaN(newPrice) && newPrice > 0) {
+        if (!isNaN(newPrice) && newPrice > 0 && invoice) {
             // Store original price if this is the first edit
             if (!invoice.originalUnitPrice) {
                 const currentAvgPrice = models.reduce((sum, m) => sum + (m.share / 100) * m.pricePerToken, 0)
-                setInvoice(prev => ({ ...prev, originalUnitPrice: currentAvgPrice }))
+                setInvoice(prev => prev ? { ...prev, originalUnitPrice: currentAvgPrice } : null)
             }
             
             const updatedModels = models.map(model => 
@@ -469,11 +471,11 @@ export const InvoiceCard = ({ className }: { className?: string }) => {
             const tokensUsedSoFar = (invoice.tokensUsed / 30) * elapsedDays
             const newCurrentAmount = tokensUsedSoFar * avgPricePerToken
             
-            setInvoice(prev => ({
+            setInvoice(prev => prev ? ({
                 ...prev,
                 currentAmount: Math.round(newCurrentAmount),
                 predictedAmount: Math.round(newCurrentAmount + projectedAmount)
-            }))
+            }) : null)
         }
         setEditingModelId(null)
         setEditingPrice('')
@@ -545,11 +547,11 @@ export const InvoiceCard = ({ className }: { className?: string }) => {
     if (!invoice) {
         return (
             <div className={cn("relative w-full", className)}>
-                <div className="relative bg-white dark:bg-zinc-900 rounded-t-2xl p-8 shadow-xl border-t border-l border-r border-zinc-200 dark:border-zinc-800 overflow-hidden">
+                <div className="relative bg-white dark:bg-[#181818] rounded-t-2xl p-8 shadow-xl dark:shadow-white/20 border-t border-l border-r border-zinc-200 dark:border-[#282828] overflow-hidden">
                     <div className="animate-pulse">
-                        <div className="h-6 bg-gray-200 rounded w-1/4 mb-4"></div>
-                        <div className="h-8 bg-gray-200 rounded w-1/2 mb-4"></div>
-                        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                        <div className="h-6 bg-gray-200 dark:bg-[#282828] rounded w-1/4 mb-4"></div>
+                        <div className="h-8 bg-gray-200 dark:bg-[#282828] rounded w-1/2 mb-4"></div>
+                        <div className="h-4 bg-gray-200 dark:bg-[#282828] rounded w-3/4"></div>
                     </div>
                 </div>
             </div>
@@ -559,21 +561,23 @@ export const InvoiceCard = ({ className }: { className?: string }) => {
     return (
         <div className={cn("relative w-full", className)}>
             {/* Card container */}
-            <div className="relative bg-white dark:bg-zinc-900 rounded-t-2xl pt-8 px-8 pb-16 shadow-xl border-t border-l border-r border-zinc-200 dark:border-zinc-800 overflow-hidden">
+            <div className="relative bg-white dark:bg-[#181818] rounded-t-2xl pt-8 px-8 pb-16 shadow-xl dark:shadow-white/20 border-t border-l border-r border-zinc-200 dark:border-[#282828] overflow-hidden">
                 
                 {/* Top-right actions menu */}
                 <div className="absolute top-4 right-4 z-20">
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <HeroUIButton isIconOnly size="sm" variant="light" className="text-foreground/80 hover:text-foreground">
+                            <HeroUIButton isIconOnly size="sm" variant="light" className="text-foreground/80 hover:text-foreground relative">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
                                     <circle cx="12" cy="5" r="1.6" />
                                     <circle cx="12" cy="12" r="1.6" />
                                     <circle cx="12" cy="19" r="1.6" />
                                 </svg>
+                                {/* Red indicator dot */}
+                                <div className="absolute top-0.5 right-0.5 w-1 h-1 bg-red-500 rounded-full pointer-events-none" />
                             </HeroUIButton>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="min-w-[12rem]">
+                        <DropdownMenuContent align="end" className="min-w-[14rem]">
                             <DropdownMenuItem
                                 onClick={() => {
                                     // Find and click the first price edit button
@@ -585,6 +589,23 @@ export const InvoiceCard = ({ className }: { className?: string }) => {
                             >
                                 <Pencil className="mr-2 h-3.5 w-3.5" />
                                 Edit Prices
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                                onClick={() => setIsLivePaused(prev => !prev)}
+                                className="relative"
+                            >
+                                <div className="flex items-center justify-between w-full">
+                                    <div className="flex items-center">
+                                        {isLivePaused ? (
+                                            <Play className="mr-2 h-3.5 w-3.5" />
+                                        ) : (
+                                            <Pause className="mr-2 h-3.5 w-3.5" />
+                                        )}
+                                        {isLivePaused ? 'Resume' : 'Pause'}
+                                    </div>
+                                    {/* Red indicator dot for this menu item */}
+                                    <div className="w-1 h-1 bg-red-500 rounded-full flex-shrink-0 ml-3" />
+                                </div>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem disabled>
@@ -616,7 +637,10 @@ export const InvoiceCard = ({ className }: { className?: string }) => {
                 <div className="grid grid-cols-2 gap-4 mb-2">
                     {/* Left column */}
                     <div>
-                        <LogoIcon className="mb-3" />
+                        <LogoIcon 
+                            className="mb-3 -ml-1" 
+                            isPaused={isLivePaused}
+                        />
                         <div className="text-xs text-zinc-500 dark:text-zinc-400 mb-1">
                             {invoice.id}
                         </div>
@@ -624,6 +648,7 @@ export const InvoiceCard = ({ className }: { className?: string }) => {
                             <ElegantNumberCounter 
                                 startingNumber={invoice.currentAmount}
                                 className="font-neue-montreal-bold text-2xl"
+                                disabled={isLivePaused}
                             />
                         </div>
                     </div>
@@ -633,11 +658,12 @@ export const InvoiceCard = ({ className }: { className?: string }) => {
                         <ActivityGraph 
                             data={invoice.historicalData || []}
                             predictions={generatePredictions(invoice)}
-                            isAnimating={true}
+                            isAnimating={!isLivePaused}
                             unitPrice={models.reduce((sum, m) => sum + (m.share / 100) * m.pricePerToken, 0)}
                             currentAmount={invoice.currentAmount}
                             predictedAmount={invoice.predictedAmount}
                             originalUnitPrice={invoice.originalUnitPrice}
+                            isPaused={isLivePaused}
                         />
                     </div>
                 </div>
@@ -668,7 +694,7 @@ export const InvoiceCard = ({ className }: { className?: string }) => {
                             {/* Bar and percentage grouped together */}
                             <div className="flex items-center">
                                 {/* Progress bar */}
-                                <div className="w-16 h-1.5 rounded-full bg-zinc-200 dark:bg-zinc-800 overflow-hidden">
+                                <div className="w-16 h-1.5 rounded-full bg-zinc-200 dark:bg-[#282828] overflow-hidden">
                                     <div
                                         className="h-full bg-black dark:bg-white transition-all"
                                         style={{ width: `${model.share}%` }}
@@ -686,7 +712,7 @@ export const InvoiceCard = ({ className }: { className?: string }) => {
                                 {editingModelId === model.id ? (
                                     <div className="flex items-center gap-1">
                                         <Input
-                                            type="text"
+                                            type="number"
                                             value={editingPrice}
                                             onChange={(e) => {
                                                 const value = e.target.value
@@ -705,7 +731,9 @@ export const InvoiceCard = ({ className }: { className?: string }) => {
                                                 "w-16 h-6 text-xs px-1",
                                                 shakeInput === model.id && "animate-shake"
                                             )}
-                                            maxLength={6}
+                                            step="0.001"
+                                            min="0"
+                                            max="9.999"
                                             autoFocus
                                             onKeyDown={(e) => {
                                                 if (e.key === 'Enter') {
@@ -714,7 +742,7 @@ export const InvoiceCard = ({ className }: { className?: string }) => {
                                                     handleCancelEdit()
                                                 } else if (
                                                     editingPrice.length >= 6 && 
-                                                    !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key) &&
+                                                    !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'ArrowUp', 'ArrowDown'].includes(e.key) &&
                                                     !e.ctrlKey && !e.metaKey
                                                 ) {
                                                     // Shake on any character input when at limit
@@ -762,8 +790,7 @@ export const InvoiceCard = ({ className }: { className?: string }) => {
                 </div>
                 
                 {/* Gradient fade overlay at bottom - fades to website background */}
-                <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-9
-    0 bg-gradient-to-t from-muted/90 via-white/60 dark:via-zinc-300/600 to-transparent" />
+                <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-9 bg-gradient-to-t from-muted/90 via-white/60 dark:from-[#181818] dark:via-[#181818]/60 to-transparent" />
             </div>
         </div>
     )

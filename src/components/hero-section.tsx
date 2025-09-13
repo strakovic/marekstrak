@@ -8,9 +8,11 @@ import { Magnet } from "@/components/ui/magnet-hover";
 import HeroHeader from "@/components/header";
 import { DotPattern } from "@/components/magicui/dot-pattern";
 import { cn } from "@/lib/utils";
-import FeaturesSection from "@/components/features-13";
+import FeaturesSection from '@/components/features-13'
+import { motion } from 'framer-motion'
 import ShinyText from "@/components/ui/shiny-text";
 import ProximityText from "@/components/ui/proximity-text";
+import { usePerformance } from "@/hooks/use-performance";
 
 // Simple button styles matching the header button
 
@@ -90,10 +92,19 @@ function DashboardSwitcher({
 }
 
 export default function HeroSection() {
+  const { shouldReduceAnimations, shouldPauseAnimations } = usePerformance();
+  
   return (
     <>
       <HeroHeader />
-      <main role="main" className="relative overflow-x-hidden pt-20">
+      <main 
+        role="main" 
+        className={cn(
+          "relative overflow-x-hidden pt-20",
+          shouldPauseAnimations && "performance-mode"
+        )}
+        data-paused={shouldPauseAnimations}
+      >
         <section id="home">
           <div className="relative mx-auto max-w-5xl border-x px-6 xl:px-0 pb-10 pt-0 md:pb-16 md:pt-6">
             <DotPattern
@@ -103,39 +114,25 @@ export default function HeroSection() {
               cx={2}
               cy={2}
               cr={1}
+              static={shouldReduceAnimations}
+              maxDots={shouldReduceAnimations ? 200 : 500}
             />
             <div className="relative z-10">
-              <div className="relative mx-auto w-fit bg-gray-950/5 p-2">
-                <div aria-hidden={true} className="absolute left-1 top-1 size-[3px] rounded-full bg-black" />
-                <div aria-hidden={true} className="absolute right-1 top-1 size-[3px] rounded-full bg-black" />
-                <div aria-hidden={true} className="absolute bottom-1 left-1 size-[3px] rounded-full bg-black" />
-                <div aria-hidden={true} className="absolute bottom-1 right-1 size-[3px] rounded-full bg-black" />
-                <div className="relative flex h-fit items-center gap-2 rounded-full bg-white px-3 py-1 shadow overflow-visible">
+              <div className="relative mx-auto w-fit bg-gray-950/5 dark:bg-white/10 p-2">
+                <div aria-hidden={true} className="absolute left-1 top-1 size-[3px] rounded-full bg-black dark:bg-white" />
+                <div aria-hidden={true} className="absolute right-1 top-1 size-[3px] rounded-full bg-black dark:bg-white" />
+                <div aria-hidden={true} className="absolute bottom-1 left-1 size-[3px] rounded-full bg-black dark:bg-white" />
+                <div aria-hidden={true} className="absolute bottom-1 right-1 size-[3px] rounded-full bg-black dark:bg-white" />
+                <div className="relative flex h-fit items-center gap-2 rounded-full bg-white dark:bg-black px-3 py-1 overflow-visible">
                   {/* Animated orange circle with blurred shadow glow */}
                   <div className="relative flex items-center p-3 -m-3">
-                    <style jsx>{`
-                      @keyframes pulseShadow {
-                        0%, 100% {
-                          box-shadow: 0 0 2px 0 rgba(249, 98, 12, 0.3);
-                        }
-                        50% {
-                          box-shadow: 0 0 12px 2px rgba(249, 98, 12, 0.6),
-                                      0 0 6px 1px rgba(249, 98, 12, 0.8);
-                        }
-                      }
-                    `}</style>
-                    <div 
-                      className="relative w-2 h-2 bg-[#F9620C] rounded-full"
-                      style={{
-                        boxShadow: '0 0 12px 2px rgba(249, 98, 12, 0.6)',
-                        animation: 'pulseShadow 2s ease-in-out infinite',
-                      }}
-                    />
+                    <div className="relative w-2 h-2 bg-[#F9620C] rounded-full" />
                   </div>
                   <ShinyText 
                     text="From 0 to Enterprise" 
                     className="text-title text-sm"
-                    speed={6}
+                    speed={12}
+                    disabled={true}
                   />
                   <span className="block h-3 w-px bg-gray-200" />
                   <a 
@@ -152,7 +149,8 @@ export default function HeroSection() {
                     <ShinyText 
                       text="Learn how" 
                       className="text-primary text-sm"
-                      speed={6}
+                      speed={12}
+                      disabled={true}
                     />
                     <span className="absolute bottom-0 left-0 w-full h-[1px] bg-current opacity-70 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-center" />
                   </a>
@@ -162,7 +160,7 @@ export default function HeroSection() {
 
             <div className="mx-auto mt-12 max-w-3xl text-center md:mt-16 relative">
               {/* Soft radial gradient background for better text readability */}
-              <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_1000px_800px_at_center,rgba(250,250,250,0.9),transparent_70%)] dark:bg-[radial-gradient(ellipse_1000px_800px_at_center,rgba(255,255,255,0.15),transparent_70%)]" />
+              <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_1000px_800px_at_center,rgba(250,250,250,0.9),transparent_70%)] dark:bg-[radial-gradient(ellipse_1000px_800px_at_center,rgba(0,0,0,0.8),transparent_70%)]" />
               <div className="relative z-10">
                 <ProximityText 
                   text="The first and the last usage-based billing platform you'll ever need."
@@ -170,8 +168,9 @@ export default function HeroSection() {
                   radius={70}
                   maxScale={1.04}
                   falloff="gaussian"
+                  enabled={false}
                 />
-                <p className="mx-auto mb-12 mt-12 max-w-xl text-balance text-lg font-neue-montreal-book" style={{ color: '#0A0A0A' }}>
+                <p className="mx-auto mb-12 mt-12 max-w-xl text-balance text-lg font-neue-montreal-book text-gray-900 dark:text-gray-300">
                   Billr gives you the power to experiment, scale, and evolve with a system <strong>flexible</strong> enough to support billing for <strong>pricing strategies</strong> you <strong>haven't even imagined</strong> <span className="font-neue-montreal-book">yet</span>.
                 </p>
               </div>
@@ -182,6 +181,7 @@ export default function HeroSection() {
                   magnetStrength={0.8}
                   activeTransition="transform 0.6s ease-out"
                   inactiveTransition="transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94)"
+                  disabled={shouldPauseAnimations}
                 >
                   <Button asChild size="lg">
                     <Link href="#">
@@ -192,10 +192,11 @@ export default function HeroSection() {
               </div>
             </div>
             </div>
+            
           <div className="border-b relative min-h-[800px]">
             {/* Blurred glow effect - full width */}
             <div className="pointer-events-none absolute inset-0 overflow-hidden">
-              <div className="absolute inset-0 bg-[radial-gradient(1600px_1200px_at_center,rgba(0,72,124,0.35),transparent_80%)] blur-3xl" />
+              <div className="absolute inset-0 bg-[radial-gradient(1600px_1200px_at_center,rgba(0,72,124,0.35),transparent_80%)] dark:bg-[radial-gradient(1600px_1200px_at_center,rgba(150,200,250,0.4),transparent_70%)] blur-3xl" />
             </div>
             <div className="relative mx-auto max-w-5xl border-x px-6 xl:px-0 py-24 z-10">
               {/* Dashboard image display */}
@@ -211,6 +212,55 @@ export default function HeroSection() {
   );
 }
 
+// Industry Tags Component - Redesigned with colored squares
+function IndustryTags() {
+  const industries = [
+    { name: 'AI', color: '#8B5CF6' }, // Purple for AI/tech
+    { name: 'SaaS', color: '#3B82F6' }, // Blue for SaaS/cloud
+    { name: '3PL', color: '#F59E0B' }, // Orange for logistics/shipping
+    { name: 'Healthcare', color: '#EF4444' }, // Red for healthcare
+    { name: 'Telecom', color: '#10B981' }, // Green for telecom/connectivity
+    { name: 'Logistics', color: '#F97316' }, // Orange for logistics
+    { name: 'Energy', color: '#FACC15' } // Yellow for energy
+  ];
+  
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-2 max-w-2xl mx-auto">
+      {industries.map((industry, index) => {
+        return (
+          <motion.div
+            key={industry.name}
+            initial={{ opacity: 0, y: 20, scale: 0.8 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{
+              duration: 0.5,
+              delay: index * 0.08,
+              ease: "easeOut"
+            }}
+            whileHover={{ 
+              scale: 1.05,
+              transition: { duration: 0.2 }
+            }}
+            className="group"
+          >
+            <div className="relative">
+              <div className="flex items-center gap-1.5 px-2.5 py-1 bg-background/60 backdrop-blur-sm border border-foreground/8 rounded-full text-xs font-neue-montreal-medium text-muted-foreground hover:text-foreground transition-colors duration-300 cursor-default">
+                <div 
+                  className="w-2.5 h-2.5 rounded-sm shrink-0" 
+                  style={{ backgroundColor: industry.color }}
+                />
+                <span>{industry.name}</span>
+              </div>
+              {/* Subtle glow effect on hover */}
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-black/15 to-black/8 dark:from-white/15 dark:to-white/8 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 blur-sm" />
+            </div>
+          </motion.div>
+        );
+      })}
+    </div>
+  );
+}
+
 // Dashboard image with scroll-based width expansion and headline reveal
 function DashboardImage() {
   const [scale, setScale] = useState(0.85); // Start at 85% width
@@ -218,10 +268,27 @@ function DashboardImage() {
   const [headlineY, setHeadlineY] = useState(90); // Headline starts lower, moves up
   const [headlineOpacity, setHeadlineOpacity] = useState(0); // Headline fades in
   const containerRef = useRef<HTMLDivElement>(null);
+  const rafRef = useRef<number | null>(null);
+  const isScrollingRef = useRef(false);
 
   useEffect(() => {
+    // Only run scroll handling on the client side
+    if (typeof window === 'undefined') return;
+    
     const handleScroll = () => {
-      if (!containerRef.current) return;
+      if (isScrollingRef.current || !containerRef.current) return;
+      
+      isScrollingRef.current = true;
+      
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
+      
+      rafRef.current = requestAnimationFrame(() => {
+        if (!containerRef.current) {
+          isScrollingRef.current = false;
+          return;
+        }
       
       const rect = containerRef.current.getBoundingClientRect();
       const windowHeight = window.innerHeight;
@@ -253,16 +320,31 @@ function DashboardImage() {
       const imageTranslate = progress * 30;
       setTranslateY(imageTranslate);
       
-      // Move headline up (from 90px to -10px) and fade in
-      const headlineTranslate = 90 - (progress * 100);
-      setHeadlineY(headlineTranslate);
-      setHeadlineOpacity(progress);
+        // Move headline up (from 90px to -10px) and fade in
+        const headlineTranslate = 90 - (progress * 100);
+        setHeadlineY(headlineTranslate);
+        setHeadlineOpacity(progress);
+        
+        isScrollingRef.current = false;
+      });
     };
 
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Initial calculation
+    window.addEventListener('scroll', handleScroll, { passive: true });
     
-    return () => window.removeEventListener('scroll', handleScroll);
+    // Wait for initial rendering and then calculate
+    // This avoids the hydration mismatch
+    const timeoutId = setTimeout(() => {
+      handleScroll();
+    }, 0);
+    
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(timeoutId);
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
+    };
   }, []);
 
   return (
@@ -270,22 +352,40 @@ function DashboardImage() {
       {/* Animated headline that appears from behind */}
       <div 
         className="absolute inset-x-0 mx-auto text-center transition-all duration-500 ease-out z-0"
-        style={{
+        style={typeof window === 'undefined' ? {
+          // During SSR, use static values to avoid hydration mismatch
+          transform: 'translateY(90px)',
+          opacity: 0,
+          maxWidth: '1100px',
+          top: '-60px'  // Position headline above dashboard
+        } : {
+          // On client, use dynamic values
           transform: `translateY(${headlineY}px)`,
           opacity: headlineOpacity,
           maxWidth: '1100px',
-          top: '-60px'  // Position headline above dashboard
+          top: '-60px'
         }}
       >
         <h2 className="text-2xl md:text-3xl lg:text-4xl font-neue-montreal-bold text-black dark:text-white px-6 leading-tight">
-          Unmatched pricing flexibility across SaaS, AI, 3PL, healthcare and more.
+          Made for Every Industry
         </h2>
+        
+        {/* Industry Tags */}
+        <div className="mt-4">
+          <IndustryTags />
+        </div>
       </div>
       
       {/* Dashboard image that moves down slightly */}
       <div 
         className="relative mx-auto mt-6 transition-all duration-300 ease-out z-10"
-        style={{ 
+        style={typeof window === 'undefined' ? { 
+          // During SSR, use static values to avoid hydration mismatch
+          width: '85%',
+          maxWidth: '1280px',
+          transform: 'translateY(0px)'
+        } : { 
+          // On client, use dynamic values
           width: `${scale * 100}%`,
           maxWidth: '1280px',
           transform: `translateY(${translateY}px)`

@@ -4,7 +4,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { VisualizationIllustration } from "@/components/visualization-illustration"
 import { MapIllustration } from "@/components/map-illustration"
 import InteractiveVisualization from "@/components/interactive-visualization"
-import InfiniteNotificationList from "@/components/infinite-notification-list"
 
 export default function FeaturesSection() {
     return (
@@ -24,22 +23,17 @@ export default function FeaturesSection() {
                                         <InvoiceCard />
                                     </div>
                                     <div className="mx-auto max-w-sm text-center relative z-30 -mt-7">
-                                        <h3 className="text-balance font-neue-montreal-medium font-semibold">Intuitive Dashboard Experience</h3>
-                                        <p className="text-muted-foreground mt-3 font-neue-montreal-book">Simplify complex data with our user-friendly interface designed for quick insights.</p>
+                                        <h3 className="text-balance font-neue-montreal-medium font-semibold">Live Usage, Dynamic Pricing</h3>
+                                        <p className="text-muted-foreground mt-3 font-neue-montreal-book">See your revenue grow in real time, and change pricing instantly without engineering overhead.</p>
                                     </div>
                                 </div>
                                 {/* Background overlay to cover invoice card bottom and shadow */}
-                                <div className="absolute bottom-0 left-0 right-0 h-64 pointer-events-none z-20" style={{
-                                    background: 'linear-gradient(to top, #FAFAFA 0%, #FAFAFA 55%, transparent 85%)'
-                                }} />
+                                <div className="absolute bottom-0 left-0 right-0 h-64 pointer-events-none z-20 bg-gradient-to-t from-[#FAFAFA] via-[#FAFAFA] to-transparent dark:from-[#181818] dark:via-[#181818]" />
                             </div>
 
-                            <div className="relative col-span-2 row-span-2 grid grid-rows-subgrid gap-8 p-8">
+                            <div className="relative col-span-2 row-span-2 flex flex-col justify-center items-center p-8">
                                 <PlusDecorator className="bottom-0 -translate-x-[calc(50%+0.5px)] translate-y-[calc(50%+0.5px)]" />
 
-                                <div className="@4xl:px-8 mx-auto w-full max-w-sm self-center overflow-hidden">
-                                    <InfiniteNotificationList />
-                                </div>
                                 <div className="relative z-10 mx-auto max-w-sm text-center">
                                     <h3 className="text-balance font-neue-montreal-medium font-semibold">Seamless Integration Ecosystem</h3>
                                     <p className="text-muted-foreground mt-3 font-neue-montreal-book">Connect with your favorite tools through our extensive API network, eliminating data silos.</p>
