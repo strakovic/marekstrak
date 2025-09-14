@@ -2,19 +2,22 @@
 
 import { useState, useEffect } from "react"
 
-export function useMedia(query: string): boolean {
-  const [matches, setMatches] = useState(true)
+// SSR-safe media query hook to avoid hydration mismatches
+export function useMedia(query: string, initial: boolean = false): boolean {
+  const [matches, setMatches] = useState<boolean>(initial)
 
   useEffect(() => {
-    const matchMedia = window.matchMedia(query)
-    setMatches(matchMedia.matches)
+    if (typeof window === 'undefined' || !('matchMedia' in window)) return
 
-    const handleChange = () => setMatches(matchMedia.matches)
+    const mediaQuery = window.matchMedia(query)
+    // Sync on mount
+    setMatches(mediaQuery.matches)
 
-    matchMedia.addEventListener("change", handleChange)
+    const handleChange = (e: MediaQueryListEvent) => setMatches(e.matches)
+    mediaQuery.addEventListener("change", handleChange)
 
     return () => {
-      matchMedia.removeEventListener("change", handleChange)
+      mediaQuery.removeEventListener("change", handleChange)
     }
   }, [query])
 

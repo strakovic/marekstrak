@@ -547,11 +547,11 @@ export const InvoiceCard = ({ className }: { className?: string }) => {
     if (!invoice) {
         return (
             <div className={cn("relative w-full", className)}>
-                <div className="relative bg-white dark:bg-[#181818] rounded-t-2xl p-8 shadow-xl dark:shadow-white/20 border-t border-l border-r border-zinc-200 dark:border-[#282828] overflow-hidden">
+                <div className="relative bg-white dark:bg-[#0A0A0A] rounded-t-2xl p-8 shadow-xl dark:shadow-white/20 border-t border-l border-r border-zinc-200 dark:border-[#282828] overflow-hidden">
                     <div className="animate-pulse">
-                        <div className="h-6 bg-gray-200 dark:bg-[#282828] rounded w-1/4 mb-4"></div>
-                        <div className="h-8 bg-gray-200 dark:bg-[#282828] rounded w-1/2 mb-4"></div>
-                        <div className="h-4 bg-gray-200 dark:bg-[#282828] rounded w-3/4"></div>
+                        <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-4"></div>
+                        <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mb-4"></div>
+                        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
                     </div>
                 </div>
             </div>
@@ -561,7 +561,7 @@ export const InvoiceCard = ({ className }: { className?: string }) => {
     return (
         <div className={cn("relative w-full", className)}>
             {/* Card container */}
-            <div className="relative bg-white dark:bg-[#181818] rounded-t-2xl pt-8 px-8 pb-16 shadow-xl dark:shadow-white/20 border-t border-l border-r border-zinc-200 dark:border-[#282828] overflow-hidden">
+            <div className="relative bg-white dark:bg-[#0A0A0A] rounded-t-2xl pt-8 px-8 pb-16 shadow-xl dark:shadow-white/20 border-t border-l border-r border-zinc-200 dark:border-[#282828] overflow-hidden">
                 
                 {/* Top-right actions menu */}
                 <div className="absolute top-4 right-4 z-20">
@@ -696,7 +696,7 @@ export const InvoiceCard = ({ className }: { className?: string }) => {
                                 {/* Progress bar */}
                                 <div className="w-16 h-1.5 rounded-full bg-zinc-200 dark:bg-[#282828] overflow-hidden">
                                     <div
-                                        className="h-full bg-black dark:bg-white transition-all"
+                                        className="h-full bg-[#111621] dark:bg-white transition-all"
                                         style={{ width: `${model.share}%` }}
                                     />
                                 </div>
@@ -790,7 +790,7 @@ export const InvoiceCard = ({ className }: { className?: string }) => {
                 </div>
                 
                 {/* Gradient fade overlay at bottom - fades to website background */}
-                <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-9 bg-gradient-to-t from-muted/90 via-white/60 dark:from-[#181818] dark:via-[#181818]/60 to-transparent" />
+                <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-9 bg-gradient-to-t from-muted/90 via-white/60 dark:from-[#0A0A0A] dark:via-[#0A0A0A]/60 to-transparent" />
             </div>
         </div>
     )

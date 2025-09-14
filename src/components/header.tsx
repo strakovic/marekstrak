@@ -133,7 +133,7 @@ const mobileLinks: MobileLink[] = [
 export default function HeaderOne() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
     const [isScrolled, setIsScrolled] = React.useState(false)
-    const isLarge = useMedia('(min-width: 64rem)')
+    const isLarge = useMedia('(min-width: 64rem)', false)
 
     React.useEffect(() => {
         const handleScroll = () => {
@@ -170,7 +170,7 @@ export default function HeaderOne() {
                                         }}
                                     ></div>
                                     <span 
-                                        className="font-neue-montreal font-medium text-[#010B11] dark:text-white flex items-center leading-none"
+                                        className="font-neue-montreal font-medium text-[#111621] dark:text-white flex items-center leading-none"
                                         style={{
                                             fontFamily: 'PP Neue Montreal, var(--font-neue-montreal)',
                                             fontWeight: 500,
@@ -218,7 +218,7 @@ export default function HeaderOne() {
                                             <span>Get Started</span>
                                         </Link>
                                     </Button>
-                                    <AnimatedThemeToggler className="text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white ml-3" />
+                                    <AnimatedThemeToggler className="text-gray-500 hover:text-[#111621] dark:text-gray-400 dark:hover:text-white ml-3" />
                                 </div>
                             </div>
                         </div>

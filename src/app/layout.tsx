@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
+import Script from "next/script";
 import { HeroUIProvider } from "@heroui/system";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
@@ -63,6 +64,22 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${neueMontreal.variable} antialiased`}
         suppressHydrationWarning
       >
+        {/* Prevent scroll restoration jumping on mobile refresh */}
+        <Script id="scroll-restoration" strategy="beforeInteractive">
+          {`
+            if ('scrollRestoration' in history) {
+              history.scrollRestoration = 'manual';
+            }
+            // Force scroll to top on page load/refresh
+            window.addEventListener('beforeunload', function() {
+              window.scrollTo(0, 0);
+            });
+            // Also ensure we start at top after hydration
+            window.addEventListener('DOMContentLoaded', function() {
+              window.scrollTo(0, 0);
+            });
+          `}
+        </Script>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

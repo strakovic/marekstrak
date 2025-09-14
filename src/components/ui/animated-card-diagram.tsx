@@ -27,7 +27,7 @@ export function AnimatedCard({ className, ...props }: CardProps) {
       aria-labelledby="card-title"
       aria-describedby="card-description"
       className={cn(
-        "group/animated-card relative w-[356px] overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-900 dark:bg-black",
+        "group/animated-card relative w-[356px] overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-900 dark:bg-[#111621]",
         className
       )}
       {...props}
@@ -54,7 +54,7 @@ export function CardTitle({ className, ...props }: CardTitleProps) {
   return (
     <h3
       className={cn(
-        "text-lg font-semibold leading-none tracking-tight text-black dark:text-white",
+        "text-lg font-semibold leading-none tracking-tight text-[#111621] dark:text-white",
         className
       )}
       {...props}
@@ -174,7 +174,7 @@ const GridLayer: React.FC<{ color: string }> = ({ color }) => {
   return (
     <div
       style={{ "--grid-color": color } as React.CSSProperties}
-      className="pointer-events-none absolute inset-0 z-[4] h-full w-full bg-transparent bg-[linear-gradient(to_right,var(--grid-color)_1px,transparent_1px),linear-gradient(to_bottom,var(--grid-color)_1px,transparent_1px)] bg-[size:20px_20px] bg-center opacity-70 [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_60%,transparent_100%)]"
+      className="pointer-events-none absolute inset-0 z-[4] h-full w-full bg-transparent bg-[linear-gradient(to_right,var(--grid-color)_1px,transparent_1px),linear-gradient(to_bottom,var(--grid-color)_1px,transparent_1px)] bg-[size:20px_20px] bg-center opacity-70 [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#111621_60%,transparent_100%)]"
     />
   );
 };
@@ -209,7 +209,7 @@ const Layer1: React.FC<LayerProps> = ({ hovered, color, secondaryColor }) => {
 
   return (
     <div className="ease-[cubic-bezier(0.6, 0.6, 0, 1)] absolute top-0 left-0 z-[7] flex h-[360px] w-[356px] transform items-center justify-center transition-transform duration-500 group-hover/animated-card:-translate-y-[90px] group-hover/animated-card:scale-110">
-      <div className="relative flex h-[120px] w-[120px] items-center justify-center text-[#00000050] dark:text-white">
+      <div className="relative flex h-[120px] w-[120px] items-center justify-center text-[#11162150] dark:text-white">
         <div className="donut-chart-container relative">
           <svg width="120" height="120" viewBox="0 0 100 100">
             <circle
@@ -253,7 +253,7 @@ const Layer1: React.FC<LayerProps> = ({ hovered, color, secondaryColor }) => {
             />
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="font-gilroy text-xl text-black dark:text-white">
+            <span className="font-gilroy text-xl text-[#111621] dark:text-white">
               {hovered
                 ? secondaryProgress > 66
                   ? secondaryProgress
@@ -275,10 +275,10 @@ const Layer2: React.FC<{ color: string }> = ({ color }) => {
       style={{ "--color": color } as React.CSSProperties}
     >
       <div className="ease-[cubic-bezier(0.6, 0.6, 0, 1)] absolute inset-0 z-[6] flex w-[356px] translate-y-0 items-start justify-center bg-transparent p-4 transition-transform duration-500 group-hover/animated-card:translate-y-full">
-        <div className="ease-[cubic-bezier(0.6, 0.6, 0, 1)] rounded-md border border-zinc-200 bg-white/25 px-2 py-1.5 opacity-100 backdrop-blur-sm transition-opacity duration-500 group-hover/animated-card:opacity-0 dark:border-zinc-800 dark:bg-black/25">
+        <div className="ease-[cubic-bezier(0.6, 0.6, 0, 1)] rounded-md border border-zinc-200 bg-white/25 px-2 py-1.5 opacity-100 backdrop-blur-sm transition-opacity duration-500 group-hover/animated-card:opacity-0 dark:border-zinc-800 dark:bg-[#111621]/25">
           <div className="flex items-center gap-2">
             <div className="h-2 w-2 shrink-0 rounded-full bg-[var(--color)]" />
-            <p className="text-xs text-black dark:text-white">
+            <p className="text-xs text-[#111621] dark:text-white">
               Random Data Visualization
             </p>
           </div>
@@ -335,7 +335,7 @@ const Layer4: React.FC<LayerProps> = ({ color, secondaryColor, hovered }) => {
       {items.map((item, index) => (
         <div
           key={item.id}
-          className="ease-[cubic-bezier(0.6, 0.6, 0, 1)] absolute flex items-center justify-center gap-1 rounded-full border border-zinc-200 bg-white/70 px-1.5 py-0.5 backdrop-blur-sm transition-all duration-500 dark:border-zinc-800 dark:bg-black/70"
+          className="ease-[cubic-bezier(0.6, 0.6, 0, 1)] absolute flex items-center justify-center gap-1 rounded-full border border-zinc-200 bg-white/70 px-1.5 py-0.5 backdrop-blur-sm transition-all duration-500 dark:border-zinc-800 dark:bg-[#111621]/70"
           style={{
             transform: hovered
               ? `translate(${item.translateX}px, ${item.translateY}px)`
@@ -346,7 +346,7 @@ const Layer4: React.FC<LayerProps> = ({ color, secondaryColor, hovered }) => {
             className="h-1.5 w-1.5 rounded-full"
             style={{ backgroundColor: index < 3 ? color : secondaryColor }}
           />
-          <span className="ml-1 text-[10px] text-black dark:text-white">
+          <span className="ml-1 text-[10px] text-[#111621] dark:text-white">
             {item.text}
           </span>
         </div>

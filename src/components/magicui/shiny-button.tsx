@@ -47,7 +47,7 @@ export const ShinyButton = React.forwardRef<
       {...props}
     >
       <span
-        className="relative block size-full text-sm uppercase tracking-wide text-[rgb(0,0,0,65%)] dark:font-light dark:text-[rgb(255,255,255,90%)]"
+        className="relative block size-full text-sm uppercase tracking-wide text-[rgb(17,22,33,65%)] dark:font-light dark:text-[rgb(255,255,255,90%)]"
         style={{
           maskImage:
             "linear-gradient(-75deg,var(--primary) calc(var(--x) + 20%),transparent calc(var(--x) + 30%),var(--primary) calc(var(--x) + 100%))",
@@ -57,9 +57,9 @@ export const ShinyButton = React.forwardRef<
       </span>
       <span
         style={{
-          mask: "linear-gradient(rgb(0,0,0), rgb(0,0,0)) content-box exclude,linear-gradient(rgb(0,0,0), rgb(0,0,0))",
+          mask: "linear-gradient(rgb(17,22,33), rgb(17,22,33)) content-box exclude,linear-gradient(rgb(17,22,33), rgb(17,22,33))",
           WebkitMask:
-            "linear-gradient(rgb(0,0,0), rgb(0,0,0)) content-box exclude,linear-gradient(rgb(0,0,0), rgb(0,0,0))",
+            "linear-gradient(rgb(17,22,33), rgb(17,22,33)) content-box exclude,linear-gradient(rgb(17,22,33), rgb(17,22,33))",
           backgroundImage:
             "linear-gradient(-75deg,var(--primary)/10% calc(var(--x)+20%),var(--primary)/50% calc(var(--x)+25%),var(--primary)/10% calc(var(--x)+100%))",
         }}

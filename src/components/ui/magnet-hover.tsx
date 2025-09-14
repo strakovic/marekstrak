@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect, useRef, ReactNode, HTMLAttributes, useCallback } from "react";
 
 // Throttle function for better performance
@@ -45,7 +47,13 @@ export const Magnet: React.FC<MagnetProps> = ({
   const [isActive, setIsActive] = useState<boolean>(false);
   const [position, setPosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [isInView, setIsInView] = useState<boolean>(false);
+  const [isMounted, setIsMounted] = useState<boolean>(false);
   const magnetRef = useRef<HTMLDivElement>(null);
+
+  // Ensure consistent initial render between SSR and client
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Intersection observer to only track mouse when visible
   useEffect(() => {
@@ -125,9 +133,10 @@ export const Magnet: React.FC<MagnetProps> = ({
       <div
         className={innerClassName} // User can pass Tailwind classes here
         style={{
-          transform: `translate3d(${position.x}px, ${position.y}px, 0)`,
-          transition: transitionStyle,
-          willChange: "transform", // Hint for browser optimization
+          // Normalize z component to '0px' to match SSR exactly
+          transform: `translate3d(${position.x}px, ${position.y}px, 0px)`,
+          // Only apply transition after mount to avoid hydration mismatches
+          ...(isMounted ? { transition: transitionStyle, willChange: "transform" } : {}),
           display: "inline-block", // Ensure inner div also sizes to content
         }}
       >
