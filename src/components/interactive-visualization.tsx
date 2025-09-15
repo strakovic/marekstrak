@@ -468,12 +468,8 @@ export default function InteractiveVisualization() {
           </div>
           
         {/* Enhanced gradient fade edges - responsive to theme background */}
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-[#FAFAFA] via-[#FAFAFA]/80 to-transparent dark:from-[#181818] dark:via-[#181818]/80 z-10" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-[#FAFAFA] via-[#FAFAFA]/80 to-transparent dark:from-[#181818] dark:via-[#181818]/80 z-10" />
-        
-        {/* Additional subtle inner gradient for smoother transition */}
-        <div className="pointer-events-none absolute inset-y-0 left-16 w-8 bg-gradient-to-r from-[#FAFAFA]/60 to-transparent dark:from-[#181818]/60 z-[9]" />
-        <div className="pointer-events-none absolute inset-y-0 right-16 w-8 bg-gradient-to-l from-[#FAFAFA]/60 to-transparent dark:from-[#181818]/60 z-[9]" />
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#FAFAFA] via-[#FAFAFA]/60 via-[#FAFAFA]/20 to-transparent dark:from-[#090D14] dark:via-[#090D14]/60 dark:via-[#090D14]/20 z-10" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#FAFAFA] via-[#FAFAFA]/60 via-[#FAFAFA]/20 to-transparent dark:from-[#090D14] dark:via-[#090D14]/60 dark:via-[#090D14]/20 z-10" />
       </div>
     </div>
   )

@@ -790,7 +790,7 @@ export const InvoiceCard = ({ className }: { className?: string }) => {
                 </div>
                 
                 {/* Gradient fade overlay at bottom - fades to website background */}
-                <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-9 bg-gradient-to-t from-muted/90 via-white/60 dark:from-[#0A0A0A] dark:via-[#0A0A0A]/60 to-transparent" />
+                <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-9 bg-gradient-to-t from-muted/90 via-white/60 dark:from-[#090D14] dark:via-[#090D14]/60 to-transparent" />
             </div>
         </div>
     )

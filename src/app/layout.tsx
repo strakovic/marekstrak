@@ -60,31 +60,65 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
     >
+      <head>
+        {/* Hide body until scroll position is restored to prevent flash at top */}
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+              body {
+                visibility: hidden;
+                opacity: 0;
+              }
+            `,
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${neueMontreal.variable} antialiased`}
         suppressHydrationWarning
       >
-        {/* Prevent scroll restoration jumping on mobile refresh */}
-        <Script id="scroll-restoration" strategy="beforeInteractive">
-          {`
-            if ('scrollRestoration' in history) {
-              history.scrollRestoration = 'manual';
-            }
-            // Force scroll to top on page load/refresh
-            window.addEventListener('beforeunload', function() {
-              window.scrollTo(0, 0);
-            });
-            // Also ensure we start at top after hydration
-            window.addEventListener('DOMContentLoaded', function() {
-              window.scrollTo(0, 0);
-            });
-          `}
-        </Script>
+        {/* Preserve scroll position on refresh without jump */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                // Get saved scroll position
+                const savedPos = sessionStorage.getItem('pageScrollPos');
+                
+                // If we have a saved position, restore it immediately
+                if (savedPos && savedPos !== '0') {
+                  // Disable smooth scrolling temporarily
+                  document.documentElement.style.scrollBehavior = 'auto';
+                  // Set scroll position before first paint
+                  window.scrollTo(0, parseInt(savedPos, 10));
+                  // Re-enable smooth scrolling after a moment
+                  setTimeout(function() {
+                    document.documentElement.style.scrollBehavior = '';
+                  }, 50);
+                }
+                
+                // Show the page immediately after scroll restoration
+                // Using requestAnimationFrame ensures it happens after scroll
+                requestAnimationFrame(function() {
+                  document.body.style.visibility = 'visible';
+                  document.body.style.opacity = '1';
+                  document.body.style.transition = 'opacity 0.15s ease-in';
+                });
+                
+                // Save position on page unload
+                window.addEventListener('beforeunload', function() {
+                  sessionStorage.setItem('pageScrollPos', window.scrollY);
+                });
+              })();
+            `,
+          }}
+        />
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
-          enableSystem={false}
+          enableSystem={true}
           disableTransitionOnChange={false}
+          storageKey="billr-theme"
         >
           <HeroUIProvider>
             {children}

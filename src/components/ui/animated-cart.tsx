@@ -27,7 +27,7 @@ export function AnimatedCard({ className, ...props }: CardProps) {
       aria-labelledby="card-title"
       aria-describedby="card-description"
       className={cn(
-        "group/animated-card relative w-[356px] overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-900 dark:bg-[#111621]",
+        "group/animated-card relative w-[356px] overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-900 dark:bg-[#090D14]",
         className
       )}
       {...props}
@@ -187,13 +187,13 @@ const Layer1: React.FC<LayerProps> = ({ color, secondaryColor }) => {
         } as React.CSSProperties
       }
     >
-      <div className="flex shrink-0 items-center rounded-full border border-zinc-200 bg-white/25 px-1.5 py-0.5 backdrop-blur-sm transition-opacity duration-300 ease-in-out group-hover/animated-card:opacity-0 dark:border-zinc-800 dark:bg-[#111621]/25">
+      <div className="flex shrink-0 items-center rounded-full border border-zinc-200 bg-white/25 px-1.5 py-0.5 backdrop-blur-sm transition-opacity duration-300 ease-in-out group-hover/animated-card:opacity-0 dark:border-zinc-800 dark:bg-[#090D14]/25">
         <div className="h-1.5 w-1.5 rounded-full bg-[var(--color)]" />
         <span className="ml-1 text-[10px] text-[#111621] dark:text-white">
           +15,2%
         </span>
       </div>
-      <div className="flex shrink-0 items-center rounded-full border border-zinc-200 bg-white/25 px-1.5 py-0.5 backdrop-blur-sm transition-opacity duration-300 ease-in-out group-hover/animated-card:opacity-0 dark:border-zinc-800 dark:bg-[#111621]/25">
+      <div className="flex shrink-0 items-center rounded-full border border-zinc-200 bg-white/25 px-1.5 py-0.5 backdrop-blur-sm transition-opacity duration-300 ease-in-out group-hover/animated-card:opacity-0 dark:border-zinc-800 dark:bg-[#090D14]/25">
         <div className="h-1.5 w-1.5 rounded-full bg-[var(--secondary-color)]" />
         <span className="ml-1 text-[10px] text-[#111621] dark:text-white">
           +18,7%

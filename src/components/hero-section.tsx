@@ -1,17 +1,21 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, memo, useCallback, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Button } from "@/components/ui/button-toggle";
-import { Magnet } from "@/components/ui/magnet-hover";
-import HeroHeader from "@/components/header";
-import { DotPattern } from "@/components/magicui/dot-pattern";
+import { motion } from 'framer-motion';
 import { cn } from "@/lib/utils";
-import FeaturesSection from '@/components/features-13'
-import { motion } from 'framer-motion'
+
+// Components
+import HeroHeader from "@/components/header";
+import FeaturesSection from '@/components/features-13';
+import APIFeaturesSection from '@/components/features-6';
+import EnterpriseSecuritySection from '@/components/enterprise-security';
+import { Button } from "@/components/ui/button-toggle";
 import ShinyText from "@/components/ui/shiny-text";
 import ProximityText from "@/components/ui/proximity-text";
+
+// Hooks
 import { usePerformance } from "@/hooks/use-performance";
 
 // Simple button styles matching the header button
@@ -36,10 +40,10 @@ function DashboardSwitcher({
 
   return (
     <div className={cn("relative w-full", className)}>
-      <div className="relative rounded-3xl border border-[#111621]/5 bg-white/95 shadow-[0_10px_30px_rgba(17,22,33,0.05)] dark:border-white/10 dark:bg-[oklch(0.15_0.025_251)]">
+      <div className="relative rounded-3xl border border-[#111621]/5 bg-white/95 shadow-[0_10px_30px_rgba(17,22,33,0.05)] dark:border-white/10 dark:bg-[#090D14]">
 
         <div className="flex w-full justify-center px-4 pt-4">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#111621]/10 bg-white/95 p-1 dark:border-white/10 dark:bg-[oklch(0.18_0.03_251)]">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#111621]/10 bg-white/95 p-1 dark:border-white/10 dark:bg-[#090D14]/90">
             {items.map((it) => {
               const selected = it.key === active;
               return (
@@ -62,7 +66,7 @@ function DashboardSwitcher({
         <div className="relative mx-auto mt-4 w-full max-w-5xl px-4 pb-10">
 
           {/* DASHBOARD FRAME (stays centered above the band) */}
-          <div className="relative z-10 w-full overflow-hidden rounded-2xl border border-[#111621]/5 bg-white/80 shadow-md ring-1 ring-[#111621]/5 dark:border-white/10 dark:bg-[oklch(0.15_0.025_251)] dark:ring-white/10">
+          <div className="relative z-10 w-full overflow-hidden rounded-2xl border border-[#111621]/5 bg-white/80 shadow-md ring-1 ring-[#111621]/5 dark:border-white/10 dark:bg-[#090D14] dark:ring-white/10">
             <div className="relative aspect-[16/9]">
               <Image
                 src={current.src}
@@ -94,16 +98,6 @@ function DashboardSwitcher({
 export default function HeroSection() {
   const { shouldReduceAnimations, shouldPauseAnimations } = usePerformance();
   
-  // Ensure page always starts at top on mount/refresh
-  useEffect(() => {
-    // Force scroll to top on component mount (handles client-side navigation and refresh)
-    window.scrollTo(0, 0);
-    
-    // Set scroll restoration to manual to prevent browser from jumping to previous position
-    if ('scrollRestoration' in history) {
-      history.scrollRestoration = 'manual';
-    }
-  }, []);
   
   return (
     <>
@@ -116,28 +110,27 @@ export default function HeroSection() {
         )}
         data-paused={shouldPauseAnimations}
       >
-        <section id="home">
-          <div className="relative mx-auto max-w-5xl border-x px-6 xl:px-0 pb-10 pt-0 md:pb-16 md:pt-6">
-            <DotPattern
-              className="pointer-events-none absolute inset-0 z-0 text-foreground/10 [mask-image:radial-gradient(ellipse_60%_60%_at_center,#111621_30%,#111621_60%,transparent_90%)]"
-              width={24}
-              height={24}
-              cx={2}
-              cy={2}
-              cr={1}
-              static={shouldReduceAnimations}
-              maxDots={shouldReduceAnimations ? 200 : 500}
-            />
+        <section id="home" className="relative">
+          {/* Subtle cloud gradient for headline area */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-[600px] overflow-visible">
+            {/* Light mode - dark blue gradient #151927 */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_1800px_350px_at_center,rgba(21,25,39,0.4),transparent_30%)] blur-[120px] dark:hidden" />
+            {/* Dark mode - white gradient */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.15),transparent_45%)] blur-[100px] hidden dark:block" />
+          </div>
+          
+          {/* Content container - constrained width */}
+          <div className="relative mx-auto max-w-5xl px-6 xl:px-0 pb-6 pt-0 md:pb-10 md:pt-6">
             <div className="relative z-10">
-              <div className="relative mx-auto w-fit bg-[#111621]/5 dark:bg-[oklch(0.18_0.03_251)] p-2">
+              <div className="relative mx-auto w-fit bg-[#111621]/5 dark:bg-white/10 p-2">
                 <div aria-hidden={true} className="absolute left-1 top-1 size-[3px] rounded-full bg-[#111621] dark:bg-white" />
                 <div aria-hidden={true} className="absolute right-1 top-1 size-[3px] rounded-full bg-[#111621] dark:bg-white" />
                 <div aria-hidden={true} className="absolute bottom-1 left-1 size-[3px] rounded-full bg-[#111621] dark:bg-white" />
                 <div aria-hidden={true} className="absolute bottom-1 right-1 size-[3px] rounded-full bg-[#111621] dark:bg-white" />
-                <div className="relative flex h-fit items-center gap-2 rounded-full bg-white dark:bg-[oklch(0.11_0.02_251)] px-3 py-1 overflow-visible">
-                  {/* Animated orange circle with blurred shadow glow */}
+                <div className="relative flex h-fit items-center gap-2 rounded-full bg-white dark:bg-black px-3 py-1 overflow-visible">
+                  {/* Animated orange square */}
                   <div className="relative flex items-center p-3 -m-3">
-                    <div className="relative w-2 h-2 bg-[#F9620C] rounded-full" />
+                    <div className="relative w-2 h-2 bg-[#F9620C]" />
                   </div>
                   <ShinyText 
                     text="From 0 to Enterprise" 
@@ -194,16 +187,16 @@ export default function HeroSection() {
                 </Button>
               </div>
             </div>
-            </div>
+          </div>
             
-          <div className="relative min-h-[450px] sm:min-h-[500px] md:min-h-[600px] lg:min-h-[700px] z-10 mt-8 md:mt-12">
+          <div className="relative min-h-[450px] sm:min-h-[500px] md:min-h-[600px] lg:min-h-[700px] z-10 mt-0.5 md:mt-1">
             {/* Orange background - mobile and desktop */}
             <div className="pointer-events-none absolute inset-0 overflow-hidden">
               <div className="absolute inset-0 bg-[#F9620C]" />
               {/* White blur effect on desktop only */}
               <div className="absolute inset-0 bg-[radial-gradient(1600px_1200px_at_center,rgba(255,255,255,0.3),transparent_80%)] blur-3xl hidden md:block" />
             </div>
-            <div className="relative mx-auto max-w-5xl px-6 md:px-6 lg:px-0 py-12 md:py-32 z-20 mt-8 mobile-dashboard-container">
+            <div className="relative mx-auto max-w-5xl px-6 md:px-6 lg:px-0 py-12 md:py-32 z-20 mt-0 mobile-dashboard-container">
               {/* Dashboard image display */}
               <DashboardImage />
 
@@ -212,22 +205,24 @@ export default function HeroSection() {
         </section>
 
         <FeaturesSection />
+        <APIFeaturesSection />
+        <EnterpriseSecuritySection />
       </main>
     </>
   );
 }
 
-// Industry Tags Component - Redesigned with colored squares
-function IndustryTags() {
-  const industries = [
-    { name: 'AI', color: '#8B5CF6' }, // Purple for AI/tech
-    { name: 'SaaS', color: '#3B82F6' }, // Blue for SaaS/cloud
-    { name: '3PL', color: '#F59E0B' }, // Orange for logistics/shipping
-    { name: 'Healthcare', color: '#EF4444' }, // Red for healthcare
-    { name: 'Telecom', color: '#10B981' }, // Green for telecom/connectivity
-    { name: 'Logistics', color: '#F97316' }, // Orange for logistics
-    { name: 'Energy', color: '#FACC15' } // Yellow for energy
-  ];
+// Industry Tags Component - Optimized with memoization
+const IndustryTags = memo(() => {
+  const industries = useMemo(() => [
+    { name: 'AI', color: '#8B5CF6' },
+    { name: 'SaaS', color: '#3B82F6' },
+    { name: '3PL', color: '#F59E0B' },
+    { name: 'Healthcare', color: '#EF4444' },
+    { name: 'Telecom', color: '#10B981' },
+    { name: 'Logistics', color: '#F97316' },
+    { name: 'Energy', color: '#FACC15' }
+  ], []);
   
   return (
     <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2 max-w-2xl mx-auto px-4 sm:px-0 -mt-0.5">
@@ -264,77 +259,46 @@ function IndustryTags() {
       })}
     </div>
   );
-}
+});
 
-// Mobile Dashboard with Scroll Animation like Desktop
-function MobileDashboardPanner() {
-  const [scale, setScale] = useState(0.85); // Start smaller for bigger scaling effect
-  const [translateY, setTranslateY] = useState(0); // For moving image down
-  const [mobileHeadlineY, setMobileHeadlineY] = useState(60); // Mobile headline starts at 60px, independent from desktop
-  const [mobileHeadlineOpacity, setMobileHeadlineOpacity] = useState(0); // Mobile headline fades in
-  const [isMounted, setIsMounted] = useState(false); // Track client-side mounting
+IndustryTags.displayName = 'IndustryTags';
+
+// Mobile Dashboard - Optimized with better performance
+const MobileDashboardPanner = memo(() => {
+  const [scale, setScale] = useState(0.85);
+  const [translateY, setTranslateY] = useState(0);
+  const [mobileHeadlineY, setMobileHeadlineY] = useState(60);
+  const [mobileHeadlineOpacity, setMobileHeadlineOpacity] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number | null>(null);
-  const isScrollingRef = useRef(false);
 
   useEffect(() => {
     setIsMounted(true);
     if (typeof window === 'undefined') return;
-    
-    // Ensure we start at the top when component mounts
-    window.scrollTo(0, 0);
-    
+
     const handleScroll = () => {
-      if (!containerRef.current) return;
-      
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-      }
-      
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
       rafRef.current = requestAnimationFrame(() => {
-        if (!containerRef.current) return;
-      
-        const rect = containerRef.current.getBoundingClientRect();
-        const windowHeight = window.innerHeight;
-        
-        // Calculate progress based on element position
-        const elementTop = rect.top;
-        const viewportCenter = windowHeight / 2;
-        
-        // Start animation immediately when user starts scrolling from top of page
         const scrollY = window.scrollY;
-        const maxScroll = windowHeight * 0.5; // Animation completes after half screen length
-        let progress = Math.min(1, scrollY / maxScroll); // 0 to 1 based on total page scroll
-        
-      // Scale from 0.85 to 1.05 for smaller final size with margins
-        const newScale = 0.85 + (progress * 0.20);
-        setScale(newScale);
-        
-      // Move image down more (0 to 40px)
-        const imageTranslate = progress * 40;
-        setTranslateY(imageTranslate);
-        
-        // Move mobile headline up and fade in - independent settings
-        const mobileTextProgress = Math.min(1, progress * 1.1); // Slightly different timing for mobile
-        const mobileHeadlineTranslate = 60 - (mobileTextProgress * 140); // Mobile: start at 60px, move to -80px (slightly lower final position)
-        setMobileHeadlineY(mobileHeadlineTranslate);
-        setMobileHeadlineOpacity(mobileTextProgress);
+        const windowHeight = window.innerHeight;
+        const progress = Math.min(1, scrollY / (windowHeight * 0.5));
+
+        setScale(0.85 + progress * 0.2);
+        setTranslateY(progress * 40);
+
+        const p = Math.min(1, progress * 1.1);
+        setMobileHeadlineY(60 - p * 140);
+        setMobileHeadlineOpacity(p);
       });
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    
-    // Initial calculation
-    const timeoutId = setTimeout(() => {
-      handleScroll();
-    }, 0);
-    
+    handleScroll();
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      clearTimeout(timeoutId);
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-      }
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, []);
 
@@ -351,7 +315,7 @@ function MobileDashboardPanner() {
         </div>
         
         {/* Static dashboard image for SSR - positioned to match initial mounted state */}
-        <div className="relative rounded-2xl overflow-hidden shadow-sm bg-white dark:bg-[oklch(0.15_0.025_251)] mt-12 mx-[1px]" style={{ transform: 'scale(0.85) translateY(0px)', willChange: 'transform' }}>
+        <div className="relative rounded-2xl overflow-hidden shadow-sm bg-white dark:bg-[#090D14] mt-12 mx-[1px]">
           <div className="relative aspect-[16/9]">
             <Image
               src="/dahsboard.jpg"
@@ -389,7 +353,7 @@ function MobileDashboardPanner() {
       
       {/* Dashboard image that scales up and moves down on scroll */}
       <div 
-        className="relative rounded-2xl overflow-hidden shadow-sm bg-white dark:bg-[oklch(0.15_0.025_251)] transition-all duration-500 ease-out will-change-transform mt-12 mx-[1px]"
+        className="relative rounded-2xl overflow-hidden shadow-sm bg-white dark:bg-[#090D14] transition-all duration-500 ease-out will-change-transform mt-12 mx-[1px]"
         style={{
           transform: `scale(${scale}) translateY(${translateY}px)`,
           willChange: 'transform'
@@ -411,25 +375,24 @@ function MobileDashboardPanner() {
       </div>
     </div>
   );
-}
+});
 
-// Dashboard image with scroll-based width expansion and headline reveal
-function DashboardImage() {
-  const [translateY, setTranslateY] = useState(0); // For image moving down
-  const [scale, setScale] = useState(0.9); // Start smaller for scaling effect
-  const [desktopHeadlineY, setDesktopHeadlineY] = useState(70); // Desktop headline starts higher, moves up
-  const [desktopHeadlineOpacity, setDesktopHeadlineOpacity] = useState(0); // Desktop headline fades in
-  const [isReady, setIsReady] = useState(false); // Prevent initial jump by fading in after first calc
-  const [isMobile, setIsMobile] = useState(false);
-  const [isMounted, setIsMounted] = useState(false); // Track client-side mounting
+MobileDashboardPanner.displayName = 'MobileDashboardPanner';
+
+// Dashboard Image - Optimized with better scroll performance
+const DashboardImage = memo(() => {
+  const [translateY, setTranslateY] = useState(0);
+  const [scale, setScale] = useState(0.9);
+  const [desktopHeadlineY, setDesktopHeadlineY] = useState(70);
+  const [desktopHeadlineOpacity, setDesktopHeadlineOpacity] = useState(0);
+  const [isReady, setIsReady] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number | null>(null);
-  const isScrollingRef = useRef(false);
 
   useEffect(() => {
-    // Set mounted state and check if mobile on mount
+    // Set mounted state
     setIsMounted(true);
-    setIsMobile(window.innerWidth < 768);
     
     // Only run scroll handling on the client side
     if (typeof window === 'undefined') return;
@@ -481,7 +444,7 @@ function DashboardImage() {
       
         // Move desktop headline up and fade in - independent settings
         const desktopTextProgress = Math.min(1, progress * 1.2); // Desktop timing
-        const desktopHeadlineTranslate = 70 - (desktopTextProgress * 90); // Desktop: start at 70px, move to -20px (slightly lower final position)
+        const desktopHeadlineTranslate = 70 - (desktopTextProgress * 110); // Desktop: start at 70px, move to -40px (higher final position)
         setDesktopHeadlineY(desktopHeadlineTranslate);
         setDesktopHeadlineOpacity(desktopTextProgress);
         
@@ -534,10 +497,10 @@ function DashboardImage() {
           transform: `translateY(${desktopHeadlineY}px)`,
           opacity: desktopHeadlineOpacity,
           maxWidth: '1100px',
-          top: typeof window !== 'undefined' && window.innerWidth >= 1024 ? '-70px' : '20px' // Even lower on mobile/tablet
+          top: typeof window !== 'undefined' && window.innerWidth >= 1024 ? '-90px' : '20px' // Higher position on desktop
         }}
       >
-        <h2 className="text-2xl md:text-4xl lg:text-5xl font-neue-montreal-bold text-white px-6 leading-tight">
+        <h2 className="text-3xl md:text-5xl lg:text-6xl font-neue-montreal-bold text-white px-6 leading-tight">
           Made for Every Industry
         </h2>
         
@@ -560,7 +523,7 @@ function DashboardImage() {
           transform: typeof window !== 'undefined' ? `translateY(${translateY}px) scale(${scale})` : 'translateY(0px) scale(1)'
         }}
       >
-<div className="relative w-full overflow-hidden rounded-2xl bg-white/80 shadow-md dark:bg-[oklch(0.15_0.025_251)]">
+<div className="relative w-full overflow-hidden rounded-2xl bg-white/80 shadow-md dark:bg-[#090D14]">
           <div className="relative w-full">
             <Image
               src="/dahsboard.jpg"
@@ -577,5 +540,7 @@ function DashboardImage() {
       </div>
     </div>
   );
-}
+});
+
+DashboardImage.displayName = 'DashboardImage';
 

@@ -137,12 +137,21 @@ export function DotPattern({
     const dots = useMemo(() => {
         if (!isMounted || dimensions.width === 0 || dimensions.height === 0) return [];
         
+        const cols = Math.ceil(dimensions.width / width);
+        const rows = Math.ceil(dimensions.height / height);
+        
+        // Calculate offset to center the dot grid
+        const totalGridWidth = cols * width;
+        const totalGridHeight = rows * height;
+        const xOffset = (dimensions.width - totalGridWidth) / 2;
+        const yOffset = (dimensions.height - totalGridHeight) / 2;
+        
         return Array.from({ length: totalDots }, (_, i) => {
-            const col = i % Math.ceil(dimensions.width / width);
-            const row = Math.floor(i / Math.ceil(dimensions.width / width));
+            const col = i % cols;
+            const row = Math.floor(i / cols);
             return {
-                x: col * width + cx,
-                y: row * height + cy,
+                x: col * width + cx + xOffset + (width / 2), // Center dots horizontally
+                y: row * height + cy + yOffset,
                 col,
                 row,
                 delay: isStatic ? 0 : Math.random() * 5,
@@ -255,9 +264,44 @@ export function DotPattern({
         };
     }, [enableEnergyWaves, isDesktop, energyWaves.length, dimensions, width, height]);
 
+    // Calculate color gradient based on position
+    const getColorGradient = (dot: any) => {
+        if (dimensions.width === 0 || dimensions.height === 0) return { opacity: 1, colorClass: "text-neutral-400/60" };
+        
+        const xProgress = dot.x / dimensions.width; // 0 at left, 1 at right
+        const yProgress = dot.y / dimensions.height; // 0 at top, 1 at bottom
+        
+        // Calculate edge distance (0 at edges, 1 at center)
+        const xDistance = Math.min(xProgress, 1 - xProgress) * 2; // 0 at edges, 1 at center
+        const yDistanceFromTop = yProgress; // 0 at top, 1 at bottom
+        
+        // Combine distances - stronger effect at edges and top
+        const edgeEffect = Math.min(xDistance, yDistanceFromTop * 2); // Favor top and sides
+        
+        // Create gradient effect
+        if (edgeEffect < 0.3) {
+            // Very close to edges/top - orange color
+            return { opacity: 0.8, colorClass: "text-orange-500/80" };
+        } else if (edgeEffect < 0.5) {
+            // Transition zone - orange to neutral
+            const t = (edgeEffect - 0.3) / 0.2;
+            return { opacity: 0.7 - t * 0.1, colorClass: "text-orange-500/60" };
+        } else if (edgeEffect < 0.7) {
+            // Mid transition - dimmer orange
+            return { opacity: 0.6, colorClass: "text-orange-500/40" };
+        } else {
+            // Center area - neutral color
+            return { opacity: 0.6, colorClass: "text-neutral-400/60" };
+        }
+    };
+
     // Calculate if a dot should be transformed to a square
     const getDotTransformation = (dot: any) => {
-        if (!enableEnergyWaves) return { isSquare: false, opacity: 0, fromCursor: false };
+        if (!enableEnergyWaves) {
+            // Return color gradient info even when energy waves are disabled
+            const gradient = getColorGradient(dot);
+            return { isSquare: false, opacity: 0, fromCursor: false, ...gradient };
+        }
         
         let maxEffect = 0; // Initialize maxEffect variable
         let fromCursor = false;
@@ -273,25 +317,40 @@ export function DotPattern({
             }
         }
         
-        // Apply elliptical fade if enabled (for text readability)
+        // Apply elliptical fade if enabled (horizontal elliptical fade for smooth background merging)
         if (ellipticalFade && dimensions.width > 0 && dimensions.height > 0) {
+            // Create horizontal elliptical fade
             const centerX = dimensions.width / 2;
-            const centerY = dimensions.height * 0.45; // Center at 45% from top (moved up slightly)
+            // Position ellipse center in the hero area (accounting for shorter container height)
+            const centerY = dimensions.height * 0.15; // 15% from top for 150vh container
             
-            // Create elliptical distance calculation
-            const ellipseWidth = dimensions.width * 0.9; // 90% of container width (much wider)
-            const ellipseHeight = dimensions.height * 0.7; // 70% of container height (extended upward)
+            // Define ellipse dimensions (wider than tall for horizontal ellipse)
+            const ellipseWidth = dimensions.width * 1.2; // 120% of container width (extends beyond edges)
+            const ellipseHeight = dimensions.height * 0.3; // 30% of container height (creates horizontal ellipse)
             
+            // Calculate normalized distance from center
             const normalizedX = (dot.x - centerX) / (ellipseWidth / 2);
             const normalizedY = (dot.y - centerY) / (ellipseHeight / 2);
+            
+            // Calculate elliptical distance (0 at center, 1 at ellipse edge)
             const ellipticalDistance = Math.sqrt(normalizedX * normalizedX + normalizedY * normalizedY);
             
-            // Create fade effect: stronger fade closer to center (reduce opacity for text readability)
-            if (ellipticalDistance < 1.2) {
-                const fadeStrength = Math.max(0, 1 - ellipticalDistance / 1.2); // 1 at center, 0 at edge
-                const opacityReduction = fadeStrength * 0.85; // Reduce opacity by up to 85% (stronger gradient)
-                baseOpacity *= (1 - opacityReduction);
+            // Create smooth fade starting from ellipse edge
+            const fadeStart = 0.6; // Start fading when 60% from center
+            const fadeEnd = 1.4; // Complete fade when 140% from center (beyond ellipse)
+            
+            if (ellipticalDistance > fadeStart) {
+                if (ellipticalDistance >= fadeEnd) {
+                    // Completely faded
+                    baseOpacity *= 0;
+                } else {
+                    // In fade zone - smooth transition
+                    const fadeProgress = (ellipticalDistance - fadeStart) / (fadeEnd - fadeStart);
+                    const smoothFade = 1 - Math.sin(fadeProgress * Math.PI / 2); // Smooth fade from 1 to 0
+                    baseOpacity *= smoothFade;
+                }
             }
+            // If ellipticalDistance <= fadeStart, no fade applied (full opacity in center)
         }
         
         // Desktop: Only mouse cursor energy effect
@@ -464,32 +523,55 @@ export function DotPattern({
                 // Static dots with gradient fade and elliptical fade support
                 if (isStatic || !glow) {
                     let staticOpacity = 0.6;
+                    const gradient = getColorGradient(dot);
                     
                     // Apply gradient fade
                     if (gradientFade && dimensions.height > 0) {
                         const yProgress = dot.y / dimensions.height;
                         if (yProgress > 0.4) {
                             const fadeProgress = (yProgress - 0.4) / 0.6;
-                            staticOpacity = 0.6 * (1 - fadeProgress);
+                            staticOpacity = gradient.opacity * (1 - fadeProgress);
+                        } else {
+                            staticOpacity = gradient.opacity;
                         }
+                    } else {
+                        staticOpacity = gradient.opacity;
                     }
                     
-                    // Apply elliptical fade
+                    // Apply elliptical fade (horizontal elliptical fade for smooth background merging)
                     if (ellipticalFade && dimensions.width > 0 && dimensions.height > 0) {
+                        // Create horizontal elliptical fade
                         const centerX = dimensions.width / 2;
-                        const centerY = dimensions.height * 0.45;
-                        const ellipseWidth = dimensions.width * 0.9;
-                        const ellipseHeight = dimensions.height * 0.7;
+                        // Position ellipse center in the hero area (accounting for shorter container height)
+                        const centerY = dimensions.height * 0.15; // 15% from top for 150vh container
                         
+                        // Define ellipse dimensions (wider than tall for horizontal ellipse)
+                        const ellipseWidth = dimensions.width * 1.2; // 120% of container width (extends beyond edges)
+                        const ellipseHeight = dimensions.height * 0.3; // 30% of container height (creates horizontal ellipse)
+                        
+                        // Calculate normalized distance from center
                         const normalizedX = (dot.x - centerX) / (ellipseWidth / 2);
                         const normalizedY = (dot.y - centerY) / (ellipseHeight / 2);
+                        
+                        // Calculate elliptical distance (0 at center, 1 at ellipse edge)
                         const ellipticalDistance = Math.sqrt(normalizedX * normalizedX + normalizedY * normalizedY);
                         
-                        if (ellipticalDistance < 1.2) {
-                            const fadeStrength = Math.max(0, 1 - ellipticalDistance / 1.2);
-                            const opacityReduction = fadeStrength * 0.85; // Reduce opacity by up to 85% (stronger gradient)
-                            staticOpacity *= (1 - opacityReduction);
+                        // Create smooth fade starting from ellipse edge
+                        const fadeStart = 0.6; // Start fading when 60% from center
+                        const fadeEnd = 1.4; // Complete fade when 140% from center (beyond ellipse)
+                        
+                        if (ellipticalDistance > fadeStart) {
+                            if (ellipticalDistance >= fadeEnd) {
+                                // Completely faded
+                                staticOpacity *= 0;
+                            } else {
+                                // In fade zone - smooth transition
+                                const fadeProgress = (ellipticalDistance - fadeStart) / (fadeEnd - fadeStart);
+                                const smoothFade = 1 - Math.sin(fadeProgress * Math.PI / 2); // Smooth fade from 1 to 0
+                                staticOpacity *= smoothFade;
+                            }
                         }
+                        // If ellipticalDistance <= fadeStart, no fade applied (full opacity in center)
                     }
                     return (
                         <circle
@@ -498,7 +580,7 @@ export function DotPattern({
                             cy={dot.y}
                             r={cr}
                             fill={glow ? `url(#${id}-gradient)` : "currentColor"}
-                            className="text-neutral-400/60"
+                            className={gradient.colorClass}
                             opacity={staticOpacity}
                         />
                     );

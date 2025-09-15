@@ -28,7 +28,7 @@ export default function FeaturesSection() {
                                     </div>
                                 </div>
                                 {/* Background overlay to cover invoice card bottom and shadow */}
-                                <div className="absolute bottom-0 left-0 right-0 h-64 pointer-events-none z-20 bg-gradient-to-t from-[#FAFAFA] via-[#FAFAFA] to-transparent dark:from-[#181818] dark:via-[#181818]" />
+                <div className="absolute bottom-0 left-0 right-0 h-64 pointer-events-none z-20 bg-gradient-to-t from-[#FAFAFA] via-[#FAFAFA] to-transparent dark:from-[#090D14] dark:via-[#090D14]" />
                             </div>
 
                             <div className="relative col-span-2 row-span-2 flex flex-col justify-center items-center p-8">
